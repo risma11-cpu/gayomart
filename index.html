@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desa Gayo – Aceh Tengah</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:#fff;color:#111;overflow-x:hidden;}
+
+@keyframes auroraShift{0%{transform:translate(-10%,-10%) scale(1);}33%{transform:translate(5%,8%) scale(1.08);}66%{transform:translate(-5%,12%) scale(0.96);}100%{transform:translate(-10%,-10%) scale(1);}}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.aurora-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.13;animation:auroraShift 14s ease-in-out infinite;}
+.aurora-blob.a1{width:700px;height:500px;top:-120px;left:-100px;background:radial-gradient(ellipse,#2D6A27 0%,transparent 70%);}
+.aurora-blob.a2{width:500px;height:400px;top:30%;right:-80px;background:radial-gradient(ellipse,#4CAF50 0%,transparent 70%);animation-delay:-5s;opacity:0.08;}
+.aurora-blob.a3{width:600px;height:350px;bottom:10%;left:20%;background:radial-gradient(ellipse,#1B5E20 0%,transparent 70%);animation-delay:-9s;opacity:0.09;}
+
+.navbar{position:sticky;top:0;z-index:300;background:rgba(250,250,250,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,0.07);padding:0 56px;height:62px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{font-size:16px;font-weight:600;color:#111;display:flex;align-items:center;gap:7px;}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:#2D6A27;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{font-size:13px;color:#666;text-decoration:none;transition:color .2s;}
+.nav-links a:hover{color:#111;}
+.nav-links a.active{color:#111;font-weight:500;}
+.nav-ham{width:38px;height:38px;border-radius:50%;border:1px solid rgba(0,0,0,0.12);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4.5px;cursor:pointer;transition:background .2s;}
+.nav-ham:hover{background:#f5f5f5;}
+.ham-l{width:16px;height:1.5px;background:#111;border-radius:2px;}
+
+.hero-bg{position:relative;z-index:1;background:#fafafa;background-image:linear-gradient(to right,rgba(0,0,0,0.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,0,0,0.05) 1px,transparent 1px);background-size:72px 72px;}
+.hero-bg::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to right,rgba(250,250,250,1) 0%,transparent 6%,transparent 94%,rgba(250,250,250,1) 100%),linear-gradient(to bottom,rgba(250,250,250,1) 0%,transparent 4%);}
+
+.hero{position:relative;z-index:2;padding:80px 24px 0;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.9);border:1px solid rgba(0,0,0,0.1);border-radius:100px;padding:6px 16px 6px 10px;font-size:11.5px;color:#666;margin-bottom:24px;letter-spacing:.3px;backdrop-filter:blur(4px);}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:#2D6A27;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(40px,6vw,74px);font-weight:700;color:#0d0d0d;line-height:1.1;letter-spacing:-1px;margin-bottom:20px;max-width:780px;margin-left:auto;margin-right:auto;}
+.hero-title em{font-style:italic;color:#2D6A27;}
+.hero-desc{font-size:15.5px;color:#666;max-width:560px;margin:0 auto 36px;line-height:1.8;font-weight:300;}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-dark{background:#111;color:#fff;padding:14px 32px;border-radius:100px;font-size:13.5px;font-weight:500;border:none;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.2px;display:inline-flex;align-items:center;gap:8px;transition:all .25s;}
+.btn-dark:hover{background:#2D6A27;transform:translateY(-2px);}
+.btn-outline{background:#fff;color:#333;padding:14px 28px;border-radius:100px;font-size:13.5px;font-weight:400;border:1px solid rgba(0,0,0,0.18);cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;}
+.btn-outline:hover{border-color:#333;}
+
+/* ══ FAN COLLAGE ══ */
+.collage-wrap{
+  position:relative;
+  z-index:2;
+  width:100%;
+  height:480px;
+  overflow:hidden;
+}
+.fan-stage{
+  position:absolute;
+  bottom:60px;
+  left:50%;
+  transform:translateX(-50%);
+  width:0;
+  height:0;
+}
+.fan-card{
+  position:absolute;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,0.18),0 6px 16px rgba(0,0,0,0.08);
+  transform-origin:bottom center;
+  transition:transform .4s cubic-bezier(.34,1.4,.64,1),box-shadow .35s;
+  cursor:pointer;
+}
+.fan-card img{display:block;width:100%;height:100%;object-fit:cover;}
+
+/* Ukuran kartu */
+.fan-card.f1,.fan-card.f5{width:190px;height:280px;}
+.fan-card.f2,.fan-card.f4{width:205px;height:300px;}
+.fan-card.f3{width:220px;height:330px;}
+
+/* Posisi: left/top dari titik tengah stage, lalu rotate */
+.fan-card.f1{left:-95px; top:-280px; margin-left:-270px; transform:rotate(-20deg); z-index:1;}
+.fan-card.f2{left:-102px;top:-300px; margin-left:-135px; transform:rotate(-10deg); z-index:2;}
+.fan-card.f3{left:-110px;top:-330px; margin-left:0px;    transform:rotate(0deg);   z-index:5;}
+.fan-card.f4{left:-102px;top:-300px; margin-left:135px;  transform:rotate(10deg);  z-index:2;}
+.fan-card.f5{left:-95px; top:-280px; margin-left:270px;  transform:rotate(20deg);  z-index:1;}
+
+/* Hover */
+.fan-card.f1:hover{transform:rotate(-20deg) translateY(-18px);z-index:10;box-shadow:0 28px 64px rgba(0,0,0,0.22);}
+.fan-card.f2:hover{transform:rotate(-10deg) translateY(-18px);z-index:10;box-shadow:0 28px 64px rgba(0,0,0,0.22);}
+.fan-card.f3:hover{transform:rotate(0deg)   translateY(-20px);z-index:10;box-shadow:0 32px 72px rgba(0,0,0,0.26);}
+.fan-card.f4:hover{transform:rotate(10deg)  translateY(-18px);z-index:10;box-shadow:0 28px 64px rgba(0,0,0,0.22);}
+.fan-card.f5:hover{transform:rotate(20deg)  translateY(-18px);z-index:10;box-shadow:0 28px 64px rgba(0,0,0,0.22);}
+
+/* INTRO */
+.intro-section{position:relative;z-index:2;background:#fff;overflow:hidden;}
+.intro-slider{position:relative;width:100%;height:560px;overflow:hidden;}
+.intro-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:80px 56px;opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity 1s cubic-bezier(.4,0,.2,1),transform 1s cubic-bezier(.4,0,.2,1);}
+.intro-slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
+.intro-slide.leaving{opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity 0.8s cubic-bezier(.4,0,.2,1),transform 0.8s cubic-bezier(.4,0,.2,1);}
+.intro-inner{max-width:960px;width:100%;display:grid;gap:48px;align-items:center;}
+.intro-inner.layout-text-img{grid-template-columns:1fr 1fr;}
+.intro-inner.layout-centered{grid-template-columns:1fr;text-align:center;max-width:680px;margin:0 auto;}
+.intro-inner.layout-img-text{grid-template-columns:1fr 1fr;}
+.intro-inner.layout-img-text .intro-visual{order:-1;}
+.intro-eyebrow{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#2D6A27;margin-bottom:12px;font-weight:600;}
+.intro-title{font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,46px);font-weight:700;color:#111;line-height:1.18;letter-spacing:-.5px;margin-bottom:18px;}
+.intro-title em{font-style:italic;color:#2D6A27;}
+.intro-body{font-size:15px;color:#666;line-height:1.85;font-weight:300;margin-bottom:20px;}
+.intro-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.intro-tag{display:inline-flex;align-items:center;gap:6px;background:#f4faf3;border:1px solid #c4ddc0;border-radius:100px;padding:5px 14px;font-size:11.5px;color:#2D6A27;font-weight:500;}
+.intro-visual{
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 12px 40px rgba(0,0,0,0.10);
+    aspect-ratio:4/3;
+}
+
+.intro-visual img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+}
+.slider-nav{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;gap:10px;padding:20px 0 48px;background:#fff;}
+.s-dot{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.15);cursor:pointer;transition:all .5s cubic-bezier(.4,0,.2,1);border:none;padding:0;}
+.s-dot.active{width:32px;border-radius:4px;background:#2D6A27;}
+.slide-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(to right,#2D6A27,#5CAF50);width:0%;z-index:10;}
+
+.testi-section{position:relative;z-index:2;background:#fafafa;padding:88px 0 80px;overflow:hidden;}
+.testi-head{text-align:center;padding:0 56px;margin-bottom:52px;}
+.testi-track-wrap{position:relative;overflow:hidden;}
+.testi-track-wrap::before,.testi-track-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none;}
+.testi-track-wrap::before{left:0;background:linear-gradient(to right,#fafafa,transparent);}
+.testi-track-wrap::after{right:0;background:linear-gradient(to left,#fafafa,transparent);}
+.testi-track{display:flex;gap:24px;width:max-content;will-change:transform;}
+.testi-card{width:340px;flex-shrink:0;background:#fff;border:1px solid #ebebeb;border-radius:20px;padding:28px 28px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.04);transition:box-shadow .3s,transform .3s;}
+.testi-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.09);transform:translateY(-3px);}
+.testi-stars{margin-bottom:14px;color:#F5A623;font-size:13px;}
+.testi-quote{font-size:14.5px;color:#444;line-height:1.75;font-weight:300;margin-bottom:20px;font-style:italic;}
+.testi-quote::before{content:'\201C';font-family:'Playfair Display',serif;font-size:28px;color:#2D6A27;line-height:0;vertical-align:-10px;margin-right:4px;}
+.testi-author{display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid #f0f0f0;}
+.testi-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;}
+.testi-avatar canvas{display:block;width:100%;height:100%;}
+.testi-name{font-size:13px;font-weight:600;color:#111;margin-bottom:2px;}
+.testi-from{font-size:11px;color:#aaa;}
+
+.stats-bar{position:relative;z-index:2;background:#111;padding:60px 56px;display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+.stat-item{border-right:1px solid rgba(255,255,255,0.08);padding:0 20px;}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Playfair Display',serif;font-size:44px;font-weight:700;color:#fff;line-height:1;margin-bottom:10px;}
+.stat-lbl{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.38);}
+
+.mkt-section{position:relative;z-index:2;overflow:hidden;background:#ffffff;padding:96px 56px 88px;text-align:center;background-image:linear-gradient(to right,rgba(0,0,0,0.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,0,0,0.05) 1px,transparent 1px);background-size:72px 72px;}
+.mkt-section::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to right,#fff 0%,transparent 8%,transparent 92%,#fff 100%),radial-gradient(ellipse 75% 70% at 50% 50%,rgba(255,255,255,0) 0%,#fff 80%);}
+.mkt-inner{position:relative;z-index:2;}
+.mkt-tag{display:inline-flex;align-items:center;gap:7px;background:#f4faf3;border:1px solid #c4ddc0;border-radius:100px;padding:7px 18px 7px 11px;font-size:11.5px;color:#2D6A27;letter-spacing:.3px;font-weight:500;margin-bottom:24px;}
+.mkt-tag-dot{width:6px;height:6px;border-radius:50%;background:#2D6A27;}
+.mkt-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4.5vw,56px);font-weight:700;color:#111;line-height:1.12;letter-spacing:-.6px;margin-bottom:18px;max-width:640px;margin-left:auto;margin-right:auto;}
+.mkt-title em{font-style:italic;color:#2D6A27;}
+.mkt-desc{font-size:15px;color:#777;max-width:500px;margin:0 auto 40px;line-height:1.8;font-weight:300;}
+.mkt-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-enter{display:inline-flex;align-items:center;gap:10px;background:#111;color:#fff;padding:16px 40px;border-radius:100px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.3px;text-decoration:none;transition:all .3s;}
+.btn-enter:hover{background:#2D6A27;transform:translateY(-2px);}
+.btn-alt{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#555;padding:16px 28px;border-radius:100px;font-size:14px;font-weight:400;border:1px solid rgba(0,0,0,0.14);cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;}
+.btn-alt:hover{border-color:#333;color:#111;}
+.mkt-pills{display:flex;justify-content:center;gap:12px;margin-top:44px;flex-wrap:wrap;}
+.pill{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:100px;padding:8px 18px 8px 12px;font-size:12.5px;color:#555;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+
+.footer{position:relative;z-index:2;padding:48px 56px 36px;background:#0d0d0d;overflow:hidden;}
+.footer::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 120% at 20% 50%,rgba(45,106,39,0.14) 0%,transparent 60%),radial-gradient(ellipse 40% 80% at 80% 30%,rgba(76,175,80,0.07) 0%,transparent 60%);}
+.footer-top{position:relative;z-index:2;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:28px;}
+.f-brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.f-brand-dot{width:8px;height:8px;border-radius:50%;background:#2D6A27;}
+.f-tagline{font-size:13px;color:rgba(255,255,255,0.38);line-height:1.7;max-width:240px;font-weight:300;}
+.f-col-title{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;}
+.f-links{list-style:none;}
+.f-links li{margin-bottom:10px;}
+.f-links a{font-size:13px;color:rgba(255,255,255,0.5);text-decoration:none;transition:color .2s;}
+.f-links a:hover{color:#fff;}
+.footer-bottom{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-copy{font-size:11.5px;color:rgba(255,255,255,0.22);}
+.footer-love{font-size:11.5px;color:rgba(255,255,255,0.22);display:flex;align-items:center;gap:5px;}
+.footer-love span{color:#2D6A27;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:translateY(0);}}
+.hero-badge{animation:fadeUp .6s ease .05s both;}
+.hero-title{animation:fadeUp .7s ease .15s both;}
+.hero-desc{animation:fadeUp .7s ease .25s both;}
+.hero-cta{animation:fadeUp .7s ease .35s both;}
+.collage-wrap{animation:fadeUp .9s ease .45s both;}
+
+@media(max-width:768px){
+  .navbar{padding:0 24px;}.nav-links{display:none;}
+  .hero{padding:56px 20px 0;}
+  .fan-card.f1,.fan-card.f5{width:130px;height:190px;}
+  .fan-card.f2,.fan-card.f4{width:140px;height:205px;}
+  .fan-card.f3{width:152px;height:225px;}
+  .fan-card.f1{left:-65px;top:-190px;margin-left:-185px;transform:rotate(-20deg);}
+  .fan-card.f2{left:-70px;top:-205px;margin-left:-93px;transform:rotate(-10deg);}
+  .fan-card.f3{left:-76px;top:-225px;margin-left:0px;transform:rotate(0deg);}
+  .fan-card.f4{left:-70px;top:-205px;margin-left:93px;transform:rotate(10deg);}
+  .fan-card.f5{left:-65px;top:-190px;margin-left:185px;transform:rotate(20deg);}
+  .collage-wrap{height:340px;}
+  .intro-slider{height:auto;min-height:520px;}
+  .intro-slide{position:relative;padding:48px 20px;}
+  .intro-slide:not(.active){display:none;}
+  .intro-inner.layout-text-img,.intro-inner.layout-img-text{grid-template-columns:1fr;}
+  .mkt-section{padding:64px 24px;}
+  .footer{padding:40px 24px 28px;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:28px;}
+  .stats-bar{grid-template-columns:1fr 1fr;gap:40px 0;padding:48px 24px;}
+}
+/* ══ WHY MARKETPLACE ══ */
+.why-section{position:relative;z-index:2;background:#0d0d0d;padding:96px 56px;overflow:hidden;}
+.why-section::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 50% 80% at 0% 50%,rgba(45,106,39,0.2) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 100% 30%,rgba(76,175,80,0.08) 0%,transparent 60%);}
+.why-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;}
+.why-eyebrow{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#5CAF50;margin-bottom:16px;font-weight:600;}
+.why-title{font-family:'Playfair Display',serif;font-size:clamp(28px,3.2vw,46px);font-weight:700;color:#fff;line-height:1.15;letter-spacing:-.5px;margin-bottom:24px;}
+.why-title em{font-style:italic;color:#5CAF50;}
+.why-body{font-size:14.5px;color:rgba(255,255,255,0.55);line-height:1.85;font-weight:300;margin-bottom:16px;}
+.why-cta{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:#2D6A27;color:#fff;padding:13px 28px;border-radius:100px;font-size:13px;font-weight:500;text-decoration:none;transition:all .25s;font-family:'Inter',sans-serif;}
+.why-cta:hover{background:#3d8a32;transform:translateY(-2px);}
+.why-right{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.why-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px 20px;transition:background .3s,border-color .3s;}
+.why-card:hover{background:rgba(45,106,39,0.12);border-color:rgba(45,106,39,0.3);}
+.why-card-icon{font-size:26px;margin-bottom:12px;}
+.why-card-title{font-size:13.5px;font-weight:600;color:#fff;margin-bottom:8px;}
+.why-card-body{font-size:12.5px;color:rgba(255,255,255,0.45);line-height:1.7;font-weight:300;}
+@media(max-width:768px){
+  .why-section{padding:64px 24px;}
+  .why-inner{grid-template-columns:1fr;gap:40px;}
+  .why-right{grid-template-columns:1fr 1fr;}
+}
+.why-card-icon svg {
+  stroke: #5CAF50;
+}
+/* ══ HERO ══ */
+.mkt-hero {
+  background: #f4f9f4;
+  padding: 72px 56px 64px;
+  position: relative;
+  overflow: hidden;
+  z-index: 0; /* background paling bawah */
+}
+
+/* Aurora blob 1 — kiri atas */
+.mkt-hero::before {
+  content: '';
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,161,68,0.35) 0%, rgba(120,200,80,0.15) 40%, transparent 70%);
+  top: -200px;
+  left: -150px;
+  filter: blur(50px); /* blur dikurangi biar lebih terang */
+  animation: auroraA 9s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Aurora blob 2 — kanan bawah */
+.mkt-hero::after {
+  content: '';
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,106,39,0.25) 0%, rgba(92,175,80,0.12) 50%, transparent 70%);
+  bottom: -120px;
+  right: -80px;
+  filter: blur(60px); /* blur dikurangi */
+  animation: auroraB 12s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Aurora blob 3 — tengah */
+.mkt-hero-aurora {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(100,180,70,0.18) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(70px); /* blur dikurangi */
+  animation: auroraC 15s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes auroraA {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  50%  { transform: translate(40px, 30px) scale(1.08); opacity: 1; }
+  100% { transform: translate(70px, 50px) scale(1.15); opacity: 0.9; }
+}
+
+@keyframes auroraB {
+  0%   { transform: translate(0, 0) scale(1.1); opacity: 0.6; }
+  50%  { transform: translate(-30px, -20px) scale(1.0); opacity: 0.9; }
+  100% { transform: translate(-60px, -40px) scale(0.95); opacity: 0.7; }
+}
+
+@keyframes auroraC {
+  0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+  100% { transform: translate(-40%, -60%) scale(1.2); opacity: 0.4; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.6); }
+}
+
+.mkt-hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 32px;
+}
+
+.mkt-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(45,106,39,0.08);
+  border: 1px solid rgba(45,106,39,0.18);
+  border-radius: 100px;
+  padding: 6px 16px 6px 10px;
+  font-size: 11px;
+  color: #2D6A27;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.mkt-hero-tag-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #2D6A27;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.mkt-hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3.5vw, 52px);
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.12;
+  letter-spacing: -.5px;
+  margin-bottom: 0;
+}
+
+.mkt-hero-title em {
+  font-style: italic;
+  color: #2D6A27;
+}
+
+.mkt-hero-desc {
+  font-size: 14px;
+  color: rgba(0,0,0,0.55);
+  max-width: 500px;
+  line-height: 1.8;
+  font-weight: 300;
+  margin-bottom: 0;
+}
+
+.mkt-hero-stats {
+  display: flex;
+  gap: 40px;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(45,106,39,0.12);
+  border-radius: 20px;
+  padding: 24px 40px;
+}
+
+.mkt-stat { text-align: center; }
+
+.mkt-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.mkt-stat-lbl {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.35);
+  margin-top: 4px;
+}
+
+/* ══ Visi Misi Section ══ */
+.mkt-vision-mission {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 60px auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: transparent; /* biar aurora tetap kelihatan */
+}
+
+.mkt-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 2.8vw, 36px);
+  font-weight: 700;
+  color: #2D6A27;
+  margin-bottom: 8px;
+}
+
+.mkt-section-desc {
+  font-size: 14px;
+  color: rgba(0,0,0,0.65);
+  line-height: 1.8;
+  max-width: 600px;
+  font-weight: 300;
+}
+
+.mkt-section-desc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mkt-section-desc li {
+  margin: 6px 0;
+  color: rgba(0,0,0,0.75);
+  font-size: 13px;
+  position: relative;
+}
+
+.mkt-section-desc li::before {
+  content: '•';
+  color: #2D6A27;
+  font-weight: bold;
+  margin-right: 8px;
+}
+/* ══ Fade-in Animation ══ */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mkt-vision-mission {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 60px auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: transparent;
+  opacity: 0; /* mulai invisible */
+  animation: fadeInUp 1.2s ease forwards;
+  animation-delay: 0.3s; /* delay biar smooth */
+}
+
+.mkt-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 2.8vw, 36px);
+  font-weight: 700;
+  color: #2D6A27;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeInUp 1.2s ease forwards;
+  animation-delay: 0.6s; /* muncul setelah container */
+}
+
+.mkt-section-desc {
+  font-size: 14px;
+  color: rgba(0,0,0,0.65);
+  line-height: 1.8;
+  max-width: 600px;
+  font-weight: 300;
+  opacity: 0;
+  animation: fadeInUp 1.2s ease forwards;
+  animation-delay: 0.9s; /* muncul terakhir */
+}
+
+/* ══ MOBILE MENU ══ */
+.mobile-menu{
+  position:fixed;top:62px;left:0;right:0;z-index:299;
+  background:rgba(250,250,250,0.97);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(0,0,0,0.07);
+  padding:16px 24px 24px;
+  display:flex;flex-direction:column;gap:4px;
+  transform:translateY(-110%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+.mobile-menu.open{transform:translateY(0);pointer-events:all;}
+.mobile-menu a{font-size:15px;color:#444;text-decoration:none;padding:12px 8px;border-bottom:1px solid rgba(0,0,0,0.05);font-weight:400;transition:color .2s;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover,.mobile-menu a.active{color:#2D6A27;font-weight:500;
+}
+/* ══ Slide Animations ══ */
+@keyframes slideFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.95);
+  }
+}
+
+.intro-slide.active {
+  animation: slideFadeIn 1s ease forwards;
+}
+
+.intro-slide.leaving {
+  animation: slideFadeOut 0.8s ease forwards;
+}
+
+</style>
+</head>
+<body>
+
+<div class="aurora">
+  <div class="aurora-blob a1"></div>
+  <div class="aurora-blob a2"></div>
+  <div class="aurora-blob a3"></div>
+</div>
+
+<nav class="navbar">
+  <div class="nav-brand"><span class="nav-dot"></span>Desa Gayo</div>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Beranda</a></li>
+    <li><a href="#intro">Tentang</a></li>
+    <li><a href="#marketplace">Marketplace</a></li>
+    <li><a href="#">Kontak</a></li>
+  </ul>
+  <div class="nav-ham" aria-label="Menu">
+    <span class="ham-l"></span><span class="ham-l"></span><span class="ham-l"></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" class="active">Beranda</a>
+  <a href="#intro">Tentang</a>
+  <a href="#marketplace">Marketplace</a>
+  <a href="#">Kontak</a>
+</div>
+
+<div class="hero-bg">
+  <section class="hero">
+    <div class="hero-badge"><span class="badge-dot"></span>Aceh Tengah · Dataran Tinggi Gayo</div>
+    <h1 class="hero-title">Temukan Keindahan<br><em>Desa Gayo</em> Aceh Tengah</h1>
+    <p class="hero-desc">Pesona alam pegunungan, budaya leluhur yang kaya, dan kopi arabika terbaik dunia — semua ada di Tanah Gayo yang subur, sejuk, dan memesona.</p>
+    <div class="hero-cta">
+      <button class="btn-dark" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">
+        Jelajahi Desa
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-outline">Hubungi Kami</button>
+    </div>
+  </section>
+
+  <!-- FAN COLLAGE -->
+  <div class="collage-wrap">
+    <div class="fan-stage">
+      <div class="fan-card f1"><img src="images/pus.jpeg" alt="Tenun Gayo"></div>
+      <div class="fan-card f2"><img src="images/tenungayo.png" alt="Pegunungan Gayo"></div>
+      <div class="fan-card f3"><img src="images/gunung.png" alt="Danau Laut Tawar"></div>
+      <div class="fan-card f4"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=440&h=640&fit=crop&crop=center" alt="Kebun Kopi"></div>
+      <div class="fan-card f5"><img src="images/cima.jpeg" alt="Alam Gayo"></div>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO -->
+
+<section class="intro-section" id="intro">
+  <div class="intro-slider">
+<div class="slide-progress" id="slideProgress"></div>
+
+<!-- Slide 1 -->
+<div class="intro-slide active" data-slide="0">
+  <div class="intro-inner layout-text-img">
+
+    <div>
+      <p class="intro-eyebrow">Selamat Datang</p>
+
+      <h2 class="intro-title">
+        Desa Gayo,<br>
+        <em>Surga Tersembunyi</em><br>
+        di Atas Awan
+      </h2>
+
+      <p class="intro-body">
+        Terletak di ketinggian 1.200 mdpl di jantung Aceh Tengah,
+        Desa Gayo merupakan permata alam yang tersembunyi di antara
+        pegunungan Bukit Barisan dengan udara sejuk dan panorama hijau
+        yang memanjakan mata.
+      </p>
+
+      <p class="intro-body">
+        Lebih dari sekadar destinasi wisata, Gayo menawarkan
+        ketenangan, budaya yang kaya, serta keramahan masyarakat
+        yang tetap terjaga hingga kini.
+      </p>
+
+      <div class="intro-tags">
+        <span class="intro-tag">▲ 1.200 mdpl</span>
+        <span class="intro-tag">◈ 18°C Sepanjang Tahun</span>
+        <span class="intro-tag">❋ Alam Asri</span>
+      </div>
+    </div>
+
+    <div class="intro-visual">
+      <img src="images/rumahgayo.png" alt="Desa Gayo">
+    </div>
+
+  </div>
+</div>
+
+<!-- Slide 2 -->
+<div class="intro-slide" data-slide="1">
+  <div class="intro-inner layout-img-text">
+
+    <div class="intro-visual">
+      <img src="images/kopigayo.png" alt="Kopi Arabika Gayo">
+    </div>
+
+    <div>
+      <p class="intro-eyebrow">Kopi Arabika Gayo</p>
+
+      <h2 class="intro-title">
+        Kopi Terbaik Dunia<br>
+        Tumbuh di <em>Tanah Ini</em>
+      </h2>
+
+      <p class="intro-body">
+        Ditanam di dataran tinggi yang subur, Kopi Arabika Gayo
+        dikenal secara internasional karena kualitasnya yang unggul,
+        aroma khas, serta cita rasa yang kaya dan seimbang.
+      </p>
+
+      <div class="intro-tags">
+        <span class="intro-tag">◆ Specialty Grade</span>
+        <span class="intro-tag">◎ Diakui Dunia</span>
+        <span class="intro-tag">◉ Ribuan Hektar Kebun</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Slide 3 -->
+<div class="intro-slide" data-slide="2">
+  <div class="intro-inner layout-text-img">
+
+    <div>
+      <p class="intro-eyebrow">Budaya & Tradisi</p>
+
+      <h2 class="intro-title">
+        Warisan Leluhur<br>
+        yang <em>Tetap Hidup</em>
+      </h2>
+
+      <p class="intro-body">
+        Budaya Gayo diwariskan turun-temurun melalui seni,
+        kerajinan, adat istiadat, serta berbagai tradisi yang
+        masih dijaga dan dilestarikan oleh masyarakat hingga kini.
+      </p>
+
+      <div class="intro-tags">
+        <span class="intro-tag">✦ Tari Saman</span>
+        <span class="intro-tag">❖ Kerawang Gayo</span>
+        <span class="intro-tag">◇ Adat Istiadat</span>
+      </div>
+    </div>
+
+    <div class="intro-visual">
+      <img src="images/budayagayo.png" alt="Budaya Gayo">
+    </div>
+
+  </div>
+</div>
+
+<!-- Slide 4 -->
+<div class="intro-slide" data-slide="3">
+  <div class="intro-inner layout-text-img">
+
+    <div>
+      <p class="intro-eyebrow">Keajaiban Alam</p>
+
+      <h2 class="intro-title">
+        Danau Laut Tawar<br>
+        <em>Permata Biru</em>
+        di Tengah Pegunungan
+      </h2>
+
+      <p class="intro-body">
+        Danau Laut Tawar menjadi ikon wisata Aceh Tengah yang
+        menawarkan panorama alam menakjubkan, udara segar,
+        serta suasana tenang yang sulit ditemukan di tempat lain.
+      </p>
+
+      <div class="intro-tags">
+        <span class="intro-tag">◈ Danau Alami</span>
+        <span class="intro-tag">✧ Ikan Depik Endemik</span>
+        <span class="intro-tag">✦ Panorama Sunrise</span>
+      </div>
+    </div>
+
+    <div class="intro-visual">
+      <img src="images/luttawar.png" alt="Danau Laut Tawar">
+    </div>
+
+  </div>
+</div>
+
+  </div>
+
+  <div class="slider-nav" id="sliderNav"></div>
+</section>
+
+<!-- WHY MARKETPLACE -->
+<section class="why-section">
+  <div class="why-inner">
+    <div class="why-left">
+      <p class="why-eyebrow">Mengapa GayoMart Ada</p>
+      <h2 class="why-title">Produk Terbaik Gayo<br>Dulu <em>Sulit Dijangkau.</em><br>Kini Tidak Lagi.</h2>
+      <p class="why-body">Selama bertahun-tahun, petani kopi, pengrajin tenun, dan pelaku UMKM Gayo menghadapi tantangan yang sama — hasil kerja keras mereka sulit menjangkau pasar yang lebih luas. Rantai distribusi yang panjang memotong nilai, sementara pembeli tidak tahu harus mencari ke mana.</p>
+      <p class="why-body">GayoMart hadir untuk memutus rantai itu. Platform digital yang menghubungkan langsung antara produsen lokal Gayo dengan pembeli di seluruh Indonesia — tanpa perantara, tanpa markup berlapis, tanpa kerumitan.</p>
+      <a href="marketplace.html" class="why-cta">Kunjungi GayoMart <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="why-right">
+      <div class="why-card">
+        <div class="why-card-icon">
+          <!-- Langsung dari Sumber: daun/tanaman -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c0 0-8-4-8-12a8 8 0 0 1 16 0c0 8-8 12-8 12z"/>
+            <path d="M12 22V12"/>
+          </svg>
+        </div>
+        <div class="why-card-title">Langsung dari Sumber</div>
+        <div class="why-card-body">Beli langsung dari petani & pengrajin. Harga adil, kualitas terjamin, cerita di balik produk terasa nyata.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon">
+          <!-- Pendapatan Lebih Adil: koin/rupiah -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M9 12h6M12 9v6"/>
+          </svg>
+        </div>
+        <div class="why-card-title">Pendapatan Lebih Adil</div>
+        <div class="why-card-body">Tanpa tengkulak, tanpa potongan berlapis. Setiap pembelian langsung mendukung ekonomi keluarga petani Gayo.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon">
+          <!-- Kirim ke Seluruh Indonesia: paket/kotak -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10V6a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 6v12a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 18v-4"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <div class="why-card-title">Kirim ke Seluruh Indonesia</div>
+        <div class="why-card-body">Dari pegunungan Aceh Tengah ke pintu rumahmu. Produk dikemas segar dan dikirim ke seluruh nusantara.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon">
+          <!-- Dampak Nyata: jabat tangan -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 0 0 0-7.65z"/>
+          </svg>
+        </div>
+        <div class="why-card-title">Dampak Nyata</div>
+        <div class="why-card-body">Setiap transaksi berkontribusi pada kesejahteraan komunitas & pelestarian budaya Gayo yang kaya.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mkt-hero">
+  <!-- Aurora layer -->
+  <div class="mkt-hero-aurora"></div>
+  <!-- Visi Misi masuk ke dalam hero -->
+  <div class="mkt-vision-mission">
+    <h2 class="mkt-section-title">Visi & Misi Tanah Gayo</h2>
+    <p class="mkt-section-desc">
+      <strong>Visi:</strong> Menjadi jembatan utama antara kekayaan alam dan budaya Gayo dengan pasar digital global — menghadirkan produk autentik yang menjaga nilai tradisi, kualitas, dan keberlanjutan.
+    </p>
+    <div class="mkt-section-desc">
+      <strong>Misi:</strong>
+      <ul>
+        <li>Mendukung petani dan pengrajin lokal agar mampu bersaing di era digital.</li>
+        <li>Mempromosikan kopi, tenun, dan hasil bumi Gayo sebagai simbol kebanggaan daerah.</li>
+        <li>Membangun ekosistem marketplace yang transparan, adil, dan ramah lingkungan.</li>
+        <li>Menghubungkan pembeli dengan produsen asli tanpa perantara, menjaga keaslian dan kepercayaan.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+ 
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div class="testi-head">
+    <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#999;margin-bottom:10px;">Kata Mereka</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,3.5vw,42px);font-weight:700;color:#111;letter-spacing:-.4px;">Yang Merasakan <em style="font-style:italic;color:#2D6A27;">Tanah Gayo</em></h2>
+  </div>
+  <div class="testi-track-wrap">
+    <div class="testi-track" id="testiTrack">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Kopi Arabika Gayo benar-benar mengubah cara saya menikmati kopi. Rasa fruity-nya khas, tidak ada duanya.</p><div class="testi-author"><div class="testi-avatar"><canvas class="av" width="40" height="40" data-hue="30"></canvas></div><div><div class="testi-name">Rina Kusuma</div><div class="testi-from">Jakarta · Penikmat Kopi</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Danau Laut Tawar di pagi hari adalah pemandangan paling memukau yang pernah saya lihat. Seperti mimpi yang nyata.</p><div class="testi-author"><div class="testi-avatar"><canvas class="av" width="40" height="40" data-hue="200"></canvas></div><div><div class="testi-name">Budi Santoso</div><div class="testi-from">Medan · Fotografer</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Tenun Kerawang Gayo kualitasnya luar biasa. Motifnya kaya makna, dan tahu langsung dukung pengrajin lokal.</p><div class="testi-author"><div class="testi-avatar"><canvas class="av" width="40" height="40" data-hue="340"></canvas></div><div><div class="testi-name">Sari Dewi</div><div class="testi-from">Bandung · Pecinta Budaya</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Udara Gayo di ketinggian 1.200 meter itu beda rasanya. Sejuk alami, tenang, jauh dari polusi kota.</p><div class="testi-author"><div class="testi-avatar"><canvas class="av" width="40" height="40" data-hue="120"></canvas></div><div><div class="testi-name">Dr. Ahmad Fauzi</div><div class="testi-from">Yogyakarta · Peneliti Budaya</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Tari Saman yang dibawakan muda-mudi Gayo itu luar biasa. Warisan dunia yang sungguh harus dijaga.</p><div class="testi-author"><div class="testi-avatar"><canvas class="av" width="40" height="40" data-hue="270"></canvas></div><div><div class="testi-name">Maya Lestari</div><div class="testi-from">Surabaya · Seniman</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Pesan kopi arabika specialty via GayoMart tiba fresh roast. Rasa kopinya konsisten setiap bulan. Sudah langganan setia!</p><div class="testi-author"><div class="testi-avatar"><canvas class="av" width="40" height="40" data-hue="50"></canvas></div><div><div class="testi-name">Hendra Wijaya</div><div class="testi-from">Bali · Barista & Roaster</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">47</div><div class="stat-lbl">Desa Adat</div></div>
+  <div class="stat-item"><div class="stat-num">1.200m</div><div class="stat-lbl">Ketinggian Rata-rata</div></div>
+  <div class="stat-item"><div class="stat-num">18°C</div><div class="stat-lbl">Suhu Udara</div></div>
+  <div class="stat-item"><div class="stat-num">3.200+</div><div class="stat-lbl">Hektar Kebun Kopi</div></div>
+</div>
+
+<div class="mkt-section" id="marketplace">
+  <div class="mkt-inner">
+    <div class="mkt-tag"><span class="mkt-tag-dot"></span>GayoMart · Marketplace Digital Desa</div>
+    <h2 class="mkt-title">Belanja Produk Asli Gayo<br>Langsung dari <em>Petani &amp; UMKM</em></h2>
+    <p class="mkt-desc">Kopi arabika segar, kerajinan tenun, rempah lokal, dan hasil bumi Gayo kini hadir di satu platform.</p>
+    <div class="mkt-btns">
+      <a href="marketplace.html" class="btn-enter">Masuk ke GayoMart<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <button class="btn-alt">Pelajari Lebih Lanjut</button>
+    </div>
+    <div class="mkt-pills">
+      <div class="pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22c0 0-8-4-8-12a8 8 0 0 1 16 0c0 8-8 12-8 12z"/>
+          <path d="M12 22V12"/>
+        </svg>
+        100% Produk Lokal Gayo
+      </div>
+      <div class="pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13" rx="1"/>
+          <path d="M16 8h4l3 5v3h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/>
+          <circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        Kirim ke Seluruh Indonesia
+      </div>
+      <div class="pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 0 0 0-7.65z"/>
+        </svg>
+        Langsung dari Petani & UMKM
+      </div>
+      <div class="pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+          <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+          <line x1="6" y1="1" x2="6" y2="4"/>
+          <line x1="10" y1="1" x2="10" y2="4"/>
+          <line x1="14" y1="1" x2="14" y2="4"/>
+        </svg>
+        Kopi Arabika Specialty
+      </div>
+    </div>
+  </div>  
+</div>    
+
+<footer class="footer">
+  <div class="footer-top">
+    <div><div class="f-brand"><span class="f-brand-dot"></span>Desa Gayo</div><p class="f-tagline">Tanah pegunungan yang subur, budaya leluhur yang abadi, dan kopi terbaik dunia.</p></div>
+    <div><p class="f-col-title">Jelajahi</p><ul class="f-links"><li><a href="#">Tentang Gayo</a></li><li><a href="#">Budaya & Adat</a></li><li><a href="#">Kopi Arabika</a></li><li><a href="#">Alam & Danau</a></li></ul></div>
+    <div><p class="f-col-title">Komunitas</p><ul class="f-links"><li><a href="#">Petani Kopi</a></li><li><a href="#">UMKM Lokal</a></li><li><a href="#">Pengrajin Tenun</a></li><li><a href="#">GayoMart</a></li></ul></div>
+    <div><p class="f-col-title">Kontak</p><ul class="f-links"><li><a href="#">Pemkab Aceh Tengah</a></li><li><a href="#">Media & Pers</a></li><li><a href="#">Kebijakan Privasi</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Pemerintah Kabupaten Aceh Tengah. Semua hak dilindungi.</div>
+    <div class="footer-love">Dibuat dengan <span>♥</span> untuk masyarakat Gayo</div>
+  </div>
+</footer>
+<script>
+function draw(id,fn){const el=document.getElementById(id);if(!el)return;fn(el.getContext('2d'),el.width,el.height);}
+
+draw('iv1',(ctx,W,H)=>{
+  const sky=ctx.createLinearGradient(0,0,0,H*.5);sky.addColorStop(0,'#C8DFF0');sky.addColorStop(1,'#8BBCD8');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#5A7E5A';ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(0,H*.42);ctx.lineTo(W*.15,H*.18);ctx.lineTo(W*.32,H*.38);ctx.lineTo(W*.48,H*.12);ctx.lineTo(W*.65,H*.30);ctx.lineTo(W*.82,H*.08);ctx.lineTo(W,H*.26);ctx.lineTo(W,H);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#3D6B3D';ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(0,H*.52);ctx.lineTo(W*.2,H*.28);ctx.lineTo(W*.38,H*.48);ctx.lineTo(W*.55,H*.22);ctx.lineTo(W*.72,H*.42);ctx.lineTo(W*.9,H*.32);ctx.lineTo(W,H*.44);ctx.lineTo(W,H);ctx.closePath();ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.72)';ctx.beginPath();ctx.moveTo(W*.48,H*.12);ctx.lineTo(W*.53,H*.2);ctx.lineTo(W*.43,H*.22);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#2D5A2D';ctx.fillRect(0,H*.75,W,H*.25);
+});
+draw('iv2',(ctx,W,H)=>{
+  ctx.fillStyle='#1C3A14';ctx.fillRect(0,0,W,H);ctx.fillStyle='#2A5218';ctx.fillRect(0,H*.55,W,H*.45);
+  [[W*.08,H*.5,32,46],[W*.24,H*.44,28,40],[W*.4,H*.38,34,48],[W*.58,H*.42,28,40],[W*.76,H*.36,36,50],[W*.92,H*.46,26,38]].forEach(([x,y,rx,ry])=>{
+    ctx.fillStyle='#3A2810';ctx.fillRect(x-4,y+ry*.6,8,H-y-ry*.5);
+    ctx.fillStyle='#2A7018';ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#CC2222';for(let i=0;i<4;i++){ctx.globalAlpha=.9;ctx.beginPath();ctx.arc(x+Math.cos(i*1.6)*rx*.5,y+Math.sin(i*1.3)*ry*.4,4.5,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;
+  });
+});
+draw('iv3',(ctx,W,H)=>{
+  ctx.fillStyle='#5C2A10';ctx.fillRect(0,0,W,H);ctx.fillStyle='#7A3A18';ctx.fillRect(W*.05,H*.05,W*.9,H*.9);
+  const cols=['#C04020','#2A4A24','#D4A840','#B08428','#E86030','#1E3A1A'];
+  const cw=W*.9/6,ch=H*.9/10;
+  for(let r=0;r<10;r++)for(let c=0;c<6;c++){ctx.fillStyle=cols[(r+c)%cols.length];ctx.globalAlpha=.75;ctx.fillRect(W*.05+c*cw,H*.05+r*ch,cw,ch);}
+  ctx.globalAlpha=1;ctx.strokeStyle='#D4AF6A';ctx.lineWidth=2.5;ctx.strokeRect(W*.05,H*.05,W*.9,H*.9);
+});
+
+/* SLIDER */
+(function(){
+  const slides=document.querySelectorAll('.intro-slide'),navEl=document.getElementById('sliderNav'),prog=document.getElementById('slideProgress');
+  const DURATION=6000;let current=0,raf=null,startTs=null,paused=false;
+  slides.forEach((_,i)=>{const d=document.createElement('button');d.className='s-dot'+(i===0?' active':'');d.addEventListener('click',()=>goTo(i));navEl.appendChild(d);});
+  document.querySelector('.intro-slider').addEventListener('mouseleave',()=>{if(paused){paused=false;startTs=null;scheduleNext();}});
+  function goTo(idx){if(idx===current)return;const prev=slides[current],next=slides[idx];prev.classList.add('leaving');prev.classList.remove('active');setTimeout(()=>next.classList.add('active'),80);setTimeout(()=>prev.classList.remove('leaving'),900);current=idx;navEl.querySelectorAll('.s-dot').forEach((d,i)=>d.classList.toggle('active',i===current));}
+  function scheduleNext(){cancelAnimationFrame(raf);startTs=null;prog.style.width='0%';function tick(ts){if(paused)return;if(!startTs)startTs=ts;const pct=Math.min(((ts-startTs)/DURATION)*100,100);prog.style.width=pct+'%';if(pct<100){raf=requestAnimationFrame(tick);}else{prog.style.width='0%';goTo((current+1)%slides.length);setTimeout(scheduleNext,100);}}raf=requestAnimationFrame(tick);}
+  scheduleNext();
+})();
+
+/* AVATARS */
+document.querySelectorAll('canvas.av').forEach(cv=>{
+  const hue=parseInt(cv.dataset.hue||'0'),ctx=cv.getContext('2d'),W=cv.width,H=cv.height,R=W/2;
+  ctx.fillStyle=`hsl(${hue},55%,72%)`;ctx.beginPath();ctx.arc(R,R,R,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=`hsl(${hue},40%,88%)`;ctx.beginPath();ctx.arc(R,R*.88,R*.38,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(R,H*1.05,R*.48,R*.42,0,0,Math.PI*2);ctx.fill();
+});
+
+/* TESTIMONIAL SCROLL */
+(function(){
+  const track=document.getElementById('testiTrack');if(!track)return;
+  Array.from(track.children).forEach(c=>track.appendChild(c.cloneNode(true)));
+  track.querySelectorAll('canvas.av').forEach(cv=>{const hue=parseInt(cv.dataset.hue||'0'),ctx=cv.getContext('2d'),W=cv.width,H=cv.height,R=W/2;ctx.fillStyle=`hsl(${hue},55%,72%)`;ctx.beginPath();ctx.arc(R,R,R,0,Math.PI*2);ctx.fill();ctx.fillStyle=`hsl(${hue},40%,88%)`;ctx.beginPath();ctx.arc(R,R*.88,R*.38,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(R,H*1.05,R*.48,R*.42,0,0,Math.PI*2);ctx.fill();});
+  const totalW=(340+24)*6;let pos=0,running=true,lastTs=null;
+  track.parentElement.addEventListener('mouseenter',()=>running=false);
+  track.parentElement.addEventListener('mouseleave',()=>{running=true;lastTs=null;});
+  function animate(ts){if(running){if(!lastTs)lastTs=ts;pos+=0.6*((ts-lastTs)/16.67);if(pos>=totalW)pos-=totalW;track.style.transform=`translateX(${-pos}px)`;lastTs=ts;}else lastTs=null;requestAnimationFrame(animate);}
+  requestAnimationFrame(animate);
+})();
+/* MOBILE MENU */
+(function(){
+  const ham = document.querySelector('.nav-ham');
+  const menu = document.getElementById('mobileMenu');
+  const links = menu.querySelectorAll('a');
+
+  ham.addEventListener('click', () => {
+    menu.classList.toggle('open');
+  });
+
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.remove('open');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && !ham.contains(e.target)) {
+      menu.classList.remove('open');
+    }
+  });
+})();
+</script>
+</body>
+</html>
