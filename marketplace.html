@@ -26,10 +26,9 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
 .cart-count.show{opacity:1;}
 .nav-ham{width:38px;height:38px;border-radius:50%;border:1px solid rgba(0,0,0,0.12);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4.5px;cursor:pointer;}
 .ham-l{width:16px;height:1.5px;background:#111;border-radius:2px;}
-
 /* ══ HERO ══ */
 .mkt-hero {
-  background: #f4f9f4;
+  background: #f0f7f0;
   padding: 72px 56px 64px;
   position: relative;
   overflow: hidden;
@@ -42,11 +41,11 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
   width: 700px;
   height: 700px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(74,161,68,0.20) 0%, rgba(120,200,80,0.08) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(74,161,68,0.18) 0%, rgba(120,200,80,0.08) 50%, transparent 70%);
   top: -200px;
   left: -150px;
   filter: blur(70px);
-  animation: auroraA 9s ease-in-out infinite alternate;
+  animation: auroraA 14s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
 }
@@ -55,49 +54,84 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
 .mkt-hero::after {
   content: '';
   position: absolute;
-  width: 550px;
-  height: 550px;
+  width: 600px;
+  height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(45,106,39,0.14) 0%, rgba(92,175,80,0.06) 50%, transparent 70%);
-  bottom: -120px;
-  right: -80px;
-  filter: blur(80px);
-  animation: auroraB 12s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(45,106,39,0.15) 0%, rgba(92,175,80,0.07) 50%, transparent 70%);
+  bottom: -150px;
+  right: -100px;
+  filter: blur(75px);
+  animation: auroraB 18s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
 }
 
-/* Aurora blob 3 — tengah */
+/* Aurora blob 3 — tengah, bening ngalir kayak awan */
 .mkt-hero-aurora {
   position: absolute;
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(100,180,70,0.10) 0%, transparent 70%);
+  width: 900px;
+  height: 900px;
+  border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+  background: radial-gradient(ellipse at 40% 50%,
+    rgba(140,210,110,0.28) 0%,
+    rgba(100,180,80,0.18) 30%,
+    rgba(70,150,60,0.10) 55%,
+    transparent 72%
+  );
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  filter: blur(90px);
-  animation: auroraC 15s ease-in-out infinite alternate;
+  filter: blur(28px);
   pointer-events: none;
   z-index: 0;
+  animation: auroraCloud 20s ease-in-out infinite;
 }
 
 @keyframes auroraA {
-  0%   { transform: translate(0, 0) scale(1); opacity: 0.7; }
-  50%  { transform: translate(40px, 30px) scale(1.08); opacity: 1; }
-  100% { transform: translate(70px, 50px) scale(1.15); opacity: 0.85; }
+  0%   { transform: translate(0px, 0px) scale(1);      opacity: 0.6; }
+  33%  { transform: translate(60px, 40px) scale(1.1);  opacity: 0.9; }
+  66%  { transform: translate(30px, 80px) scale(0.95); opacity: 0.7; }
+  100% { transform: translate(80px, 20px) scale(1.05); opacity: 0.8; }
 }
 
 @keyframes auroraB {
-  0%   { transform: translate(0, 0) scale(1.1); opacity: 0.5; }
-  50%  { transform: translate(-30px, -20px) scale(1.0); opacity: 0.8; }
-  100% { transform: translate(-60px, -40px) scale(0.95); opacity: 0.6; }
+  0%   { transform: translate(0px, 0px) scale(1.1);       opacity: 0.5; }
+  33%  { transform: translate(-50px, -30px) scale(1.0);   opacity: 0.8; }
+  66%  { transform: translate(-80px, -60px) scale(1.15);  opacity: 0.6; }
+  100% { transform: translate(-40px, -80px) scale(0.95);  opacity: 0.7; }
 }
 
-@keyframes auroraC {
-  0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
-  100% { transform: translate(-40%, -60%) scale(1.2); opacity: 0.3; }
+@keyframes auroraCloud {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+    opacity: 0.85;
+  }
+  20% {
+    transform: translate(-52%, -48%) scale(1.04);
+    border-radius: 55% 45% 40% 60% / 45% 55% 50% 50%;
+    opacity: 0.95;
+  }
+  40% {
+    transform: translate(-48%, -52%) scale(1.08);
+    border-radius: 45% 55% 60% 40% / 55% 45% 45% 55%;
+    opacity: 0.90;
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1.05);
+    border-radius: 60% 40% 45% 55% / 50% 55% 45% 50%;
+    opacity: 0.88;
+  }
+  80% {
+    transform: translate(-53%, -47%) scale(1.02);
+    border-radius: 50% 50% 55% 45% / 60% 40% 55% 45%;
+    opacity: 0.92;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+    opacity: 0.85;
+  }
 }
 
 @keyframes pulse-dot {
@@ -361,7 +395,8 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
     <li><a href="index.html">Beranda</a></li>
     <li><a href="index.html#intro">Tentang</a></li>
     <li><a href="marketplace.html" class="active">Marketplace</a></li>
-    <li><a href="#">Kontak</a></li>
+    <li><a href="berita.html">Kirim Berita</a></li>
+<li><a href="#">Kontak</a></li>
   </ul>
   <div class="nav-right">
     <button class="cart-btn" id="cartBtn" aria-label="Keranjang">
@@ -378,7 +413,8 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
   <a href="index.html">Beranda</a>
   <a href="index.html#intro">Tentang</a>
   <a href="marketplace.html" class="active">Marketplace</a>
-  <a href="#">Kontak</a>
+  <a href="berita.html">Kirim Berita</a>
+<a href="#">Kontak</a>
 </div>
 
 <!-- HERO -->
@@ -389,7 +425,7 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
     <h1 class="mkt-hero-title">Produk Asli Gayo,<br>Langsung dari <em>Sumbernya</em></h1>
     <p class="mkt-hero-desc">Kopi arabika, kerajinan tenun, rempah lokal, dan hasil bumi terbaik dari petani & UMKM Gayo — langsung ke pintu rumahmu.</p>
     <div class="mkt-hero-stats">
-      <div class="mkt-stat"><div class="mkt-stat-num">120+</div><div class="mkt-stat-lbl">Produk</div></div>
+      <div class="mkt-stat"><div class="mkt-stat-num">12+</div><div class="mkt-stat-lbl">Produk</div></div>
       <div class="mkt-stat"><div class="mkt-stat-num">48</div><div class="mkt-stat-lbl">UMKM</div></div>
       <div class="mkt-stat"><div class="mkt-stat-num">34</div><div class="mkt-stat-lbl">Kabupaten</div></div>
     </div>
@@ -468,7 +504,7 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="checkoutModal">
     <div id="checkoutForm">
-      <h2 class="modal-title">Checkout</h2>
+      <h2 class="modal-title">Bayar</h2>
       <p class="modal-sub">Lengkapi data pengiriman kamu</p>
       <div class="form-row">
         <div class="form-group">
@@ -538,7 +574,6 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
 
 <script>
 /* ══ DATA PRODUK ══ */
-/* Ganti src foto dengan foto asli kamu, formatnya: src: 'nama-file.jpg' */
 const PRODUCTS = [
   {id:1, name:'Kopi Arabika Gayo Premium', cat:'kopi', seller:'UD Berkah Gayo', price:85000, unit:'250gr', badge:'bestseller', src:'images/premium.png'},
   {id:2, name:'Kopi Arabika Specialty Grade 1', cat:'kopi', seller:'Koperasi Kopi Gayo', price:120000, unit:'250gr', badge:'organic', src:'images/arabika.png'},
@@ -694,6 +729,7 @@ document.getElementById('modalOverlay').addEventListener('click', e=>{
     document.getElementById('modalOverlay').classList.remove('open');
 });
 
+/* ══ KIRIM KE SHEET — FORM SUBMIT ══ */
 function kirimKeSheet(data, SHEET_URL) {
   return new Promise((resolve) => {
     const form = document.createElement('form');
@@ -711,18 +747,23 @@ function kirimKeSheet(data, SHEET_URL) {
 
     document.body.appendChild(form);
 
-    const iframe = document.querySelector('iframe[name="hidden_iframe"]');
-    iframe.onload = () => { resolve(true); };
+    const iframe = document.querySelector('iframe[name="hidden_iframe"]') || (() => {
+      const f = document.createElement('iframe');
+      f.name = 'hidden_iframe';
+      f.style.display = 'none';
+      document.body.appendChild(f);
+      return f;
+    })();
 
+    iframe.onload = () => resolve(true);
     form.submit();
     document.body.removeChild(form);
-
-    setTimeout(() => resolve(true), 5000);
+    setTimeout(() => resolve(true), 3000);
   });
 }
 
 document.getElementById('modalConfirm').addEventListener('click', async ()=>{
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx6m0I85ij3KRnAXaOsz37ZjhMk1oq0mB9Inj2IIZ6Ck1U7dtwVLY0LhrXd9eGLno3s/exec';
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx79L5DfLVQAzvR9lxxJ5yfgRyrZRvyxUmjDlyUNhdtGsr9UiYwuCwUG2_vMHwGM5WO/exec';
 
   const name = document.getElementById('inputName').value.trim();
   const phone = document.getElementById('inputPhone').value.trim();
@@ -733,21 +774,34 @@ document.getElementById('modalConfirm').addEventListener('click', async ()=>{
 
   if(!name||!phone||!addr||!city||!payment){ showToast('Lengkapi semua data dulu ya!'); return; }
 
-  const produkList = cart.map(i => `${i.name} x${i.qty}`).join(', ');
   const total = cart.reduce((s,x) => s + x.price * x.qty, 0) + 25000;
+
+// Format produk: "id|nama|qty|subtotal" dipisah ";;"
+  const produkStr = cart.map(i => `${i.id}|${i.name}|${i.qty}|${i.price * i.qty}`).join(';;');
+
+  // ✅ Generate id_pesanan disini supaya PESANAN & PEMBAYARAN sama
+  const id_pesanan = 'PSN-' + Date.now();
 
   document.getElementById('modalConfirm').textContent = 'Memproses...';
   document.getElementById('modalConfirm').disabled = true;
 
+  // Kirim data PESANAN
   await kirimKeSheet({
-    nama: name,
-    whatsapp: phone,
+    action: 'tambahPesanan',
+    id_pesanan: id_pesanan,
+    nama_pembeli: name,
+    no_hp: phone,
     alamat: addr,
-    kota: city,
-    kodepos: zip,
-    pembayaran: payment,
-    produk: produkList,
-    total: 'Rp ' + total.toLocaleString('id-ID')
+    total: total,
+    produk: produkStr
+  }, SHEET_URL);
+
+  // Kirim data PEMBAYARAN
+  await kirimKeSheet({
+    action: 'tambahPembayaran',
+    id_pesanan: id_pesanan,
+    metode: payment,
+    jumlah: total
   }, SHEET_URL);
 
   document.getElementById('modalConfirm').textContent = 'Pesan Sekarang 🌿';
@@ -792,12 +846,14 @@ function showToast(msg){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
 }
+
 /* ══ SCROLL ANIMATE CARDS ══ */
 function animateCards(){
   document.querySelectorAll('.product-card').forEach((card, i) => {
     card.style.animationDelay = (i * 0.07) + 's';
   });
 }
+
 /* ══ INIT ══ */
 renderProducts();
 updateCartUI();
