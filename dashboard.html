@@ -10,7 +10,6 @@
 html{scroll-behavior:smooth;}
 body{font-family:'Inter',sans-serif;background:#f0f7f0;color:#111;overflow-x:hidden;min-height:100vh;}
 
-/* AURORA */
 @keyframes auroraShift{0%{transform:translate(-10%,-10%) scale(1);}33%{transform:translate(5%,8%) scale(1.08);}66%{transform:translate(-5%,12%) scale(0.96);}100%{transform:translate(-10%,-10%) scale(1);}}
 .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
 .aurora-blob{position:absolute;border-radius:50%;filter:blur(90px);animation:auroraShift 14s ease-in-out infinite;}
@@ -38,12 +37,9 @@ body{font-family:'Inter',sans-serif;background:#f0f7f0;color:#111;overflow-x:hid
 
 /* SIDEBAR */
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:256px;background:rgba(255,255,255,0.75);border-right:1px solid rgba(45,106,39,0.1);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:0;display:flex;flex-direction:column;z-index:10;box-shadow:2px 0 24px rgba(45,106,39,0.06);}
-
 .sidebar-header{padding:28px 24px 20px;border-bottom:1px solid rgba(45,106,39,0.08);}
 .sidebar-brand{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#2D6A27;display:flex;align-items:center;gap:8px;margin-bottom:20px;}
 .sidebar-brand-dot{width:8px;height:8px;border-radius:50%;background:#2D6A27;flex-shrink:0;}
-
-/* ADMIN PROFILE DI SIDEBAR */
 .sidebar-profile{display:flex;align-items:center;gap:12px;background:rgba(45,106,39,0.06);border:1px solid rgba(45,106,39,0.1);border-radius:14px;padding:12px 14px;}
 .profile-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2D6A27,#4CAF50);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
 .profile-info{flex:1;min-width:0;}
@@ -52,14 +48,13 @@ body{font-family:'Inter',sans-serif;background:#f0f7f0;color:#111;overflow-x:hid
 .profile-status{width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;box-shadow:0 0 0 2px rgba(76,175,80,0.2);}
 
 /* NAV */
-.sidebar-nav{flex:1;padding:16px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+.sidebar-nav{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
 .nav-group-label{font-size:10px;font-weight:700;color:#bbb;letter-spacing:1.5px;text-transform:uppercase;padding:12px 8px 6px;}
-.nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;cursor:pointer;color:#888;font-size:13.5px;font-weight:500;transition:all .2s;border:1px solid transparent;text-decoration:none;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;cursor:pointer;color:#888;font-size:13.5px;font-weight:500;transition:all .2s;border:1px solid transparent;}
 .nav-item:hover{background:rgba(45,106,39,0.06);color:#2D6A27;}
 .nav-item.active{background:rgba(45,106,39,0.1);color:#2D6A27;border-color:rgba(45,106,39,0.15);font-weight:600;}
 .nav-item svg{width:17px;height:17px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .nav-badge{margin-left:auto;background:#2D6A27;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;}
-
 .sidebar-footer{padding:16px;border-top:1px solid rgba(45,106,39,0.08);}
 .nav-logout{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;cursor:pointer;color:#e53935;font-size:13.5px;font-weight:500;transition:all .2s;border:1px solid transparent;}
 .nav-logout:hover{background:rgba(229,57,53,0.06);border-color:rgba(229,57,53,0.1);}
@@ -69,19 +64,38 @@ body{font-family:'Inter',sans-serif;background:#f0f7f0;color:#111;overflow-x:hid
 .main{margin-left:256px;min-height:100vh;display:flex;flex-direction:column;}
 
 /* TOPBAR */
-.topbar{background:rgba(255,255,255,0.75);backdrop-filter:blur(20px);border-bottom:1px solid rgba(45,106,39,0.08);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;}
+.topbar{background:rgba(255,255,255,0.75);backdrop-filter:blur(20px);border-bottom:1px solid rgba(45,106,39,0.08);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;}
 .topbar-left{display:flex;flex-direction:column;}
 .topbar-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#111;}
 .topbar-title em{font-style:italic;color:#2D6A27;}
 .topbar-sub{font-size:11.5px;color:#aaa;margin-top:1px;}
-.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-right{display:flex;align-items:center;gap:12px;position:relative;}
 .topbar-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.9);border:1px solid rgba(45,106,39,0.12);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;}
 .topbar-btn:hover{background:#f4faf3;border-color:#2D6A27;}
 .topbar-btn svg{width:16px;height:16px;stroke:#666;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#e53935;border:1.5px solid #fff;}
 .refresh-btn{display:flex;align-items:center;gap:7px;padding:8px 18px;border-radius:100px;background:rgba(255,255,255,0.9);border:1px solid rgba(45,106,39,0.15);color:#2D6A27;font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s;}
 .refresh-btn:hover{background:#f4faf3;}
+.refresh-btn:disabled{opacity:0.6;cursor:not-allowed;}
 .refresh-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.refresh-btn.spinning svg{animation:spin 0.6s linear;}
+
+/* NOTIF DROPDOWN */
+.notif-dropdown{position:absolute;top:50px;right:0;width:300px;background:#fff;border:1px solid rgba(45,106,39,0.12);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:200;overflow:hidden;display:none;}
+.notif-dropdown.open{display:block;}
+.notif-header{padding:14px 16px;border-bottom:1px solid #f0f0f0;font-size:12px;font-weight:700;color:#2D6A27;display:flex;align-items:center;justify-content:space-between;}
+.notif-header span{font-size:11px;color:#aaa;font-weight:400;cursor:pointer;}
+.notif-header span:hover{color:#2D6A27;}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-bottom:1px solid #f8f8f8;cursor:pointer;transition:background .15s;}
+.notif-item:hover{background:#f9fdf9;}
+.notif-item:last-child{border-bottom:none;}
+.notif-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;}
+.notif-icon.orange{background:#FFF8E1;}
+.notif-icon.green{background:#E8F5E9;}
+.notif-text-title{font-size:12.5px;font-weight:600;color:#111;}
+.notif-text-sub{font-size:11px;color:#aaa;margin-top:2px;}
+.notif-empty{padding:32px 16px;text-align:center;color:#bbb;font-size:13px;}
 
 /* CONTENT */
 .content{flex:1;padding:28px 32px 40px;}
@@ -108,7 +122,7 @@ body{font-family:'Inter',sans-serif;background:#f0f7f0;color:#111;overflow-x:hid
 /* GRID 2 COL */
 .grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;margin-bottom:24px;}
 
-/* CHART CARD */
+/* CHART */
 .chart-card{background:rgba(255,255,255,0.8);border:1px solid rgba(45,106,39,0.1);border-radius:18px;padding:24px;backdrop-filter:blur(12px);box-shadow:0 2px 12px rgba(45,106,39,0.05);}
 .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .card-title{font-size:14px;font-weight:700;color:#111;}
@@ -116,8 +130,6 @@ body{font-family:'Inter',sans-serif;background:#f0f7f0;color:#111;overflow-x:hid
 .tab-group{display:flex;gap:4px;background:#f4faf3;border-radius:100px;padding:3px;}
 .tab-btn{padding:5px 14px;border-radius:100px;font-size:11.5px;font-weight:600;font-family:inherit;border:none;cursor:pointer;transition:all .2s;color:#888;background:transparent;}
 .tab-btn.active{background:#fff;color:#2D6A27;box-shadow:0 1px 4px rgba(0,0,0,0.08);}
-
-/* SIMPLE BAR CHART */
 .chart-wrap{height:180px;display:flex;align-items:flex-end;gap:8px;padding-bottom:24px;position:relative;}
 .chart-wrap::after{content:'';position:absolute;bottom:24px;left:0;right:0;height:1px;background:rgba(0,0,0,0.06);}
 .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
@@ -125,7 +137,7 @@ body{font-family:'Inter',sans-serif;background:#f0f7f0;color:#111;overflow-x:hid
 .bar:hover::after{content:attr(data-val);position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:10px;padding:3px 7px;border-radius:6px;white-space:nowrap;}
 .bar-label{font-size:10px;color:#bbb;font-weight:500;}
 
-/* RECENT ORDERS */
+/* RECENT */
 .recent-card{background:rgba(255,255,255,0.8);border:1px solid rgba(45,106,39,0.1);border-radius:18px;padding:24px;backdrop-filter:blur(12px);box-shadow:0 2px 12px rgba(45,106,39,0.05);}
 .order-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;}
 .order-item:last-child{border-bottom:none;}
@@ -171,7 +183,7 @@ tr:hover td{background:rgba(45,106,39,0.02);}
 .btn-tolak{background:#FFEBEE;color:#C62828;border:1px solid #FFCDD2;}
 .btn-tolak:hover{background:#FFCDD2;}
 
-/* PROFIL PAGE */
+/* PROFIL */
 .profil-wrap{max-width:560px;}
 .profil-card{background:rgba(255,255,255,0.85);border:1px solid rgba(45,106,39,0.1);border-radius:20px;padding:32px;backdrop-filter:blur(12px);box-shadow:0 2px 12px rgba(45,106,39,0.05);margin-bottom:20px;}
 .profil-avatar-big{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#2D6A27,#4CAF50);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#fff;margin-bottom:16px;box-shadow:0 4px 16px rgba(45,106,39,0.25);}
@@ -183,7 +195,7 @@ tr:hover td{background:rgba(45,106,39,0.02);}
 .profil-info-label{color:#aaa;font-size:12px;min-width:100px;}
 .profil-info-val{color:#111;font-weight:500;}
 
-/* GRAFIK PAGE */
+/* GRAFIK */
 .grafik-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
 .big-chart{background:rgba(255,255,255,0.8);border:1px solid rgba(45,106,39,0.1);border-radius:18px;padding:28px;backdrop-filter:blur(12px);box-shadow:0 2px 12px rgba(45,106,39,0.05);}
 .big-chart-wrap{height:220px;display:flex;align-items:flex-end;gap:10px;padding-bottom:28px;position:relative;}
@@ -265,7 +277,6 @@ tr:hover td{background:rgba(45,106,39,0.02);}
         <div class="profile-status"></div>
       </div>
     </div>
-
     <nav class="sidebar-nav">
       <div class="nav-group-label">Menu Utama</div>
       <div class="nav-item active" onclick="showPage('beranda',this)">
@@ -286,20 +297,17 @@ tr:hover td{background:rgba(45,106,39,0.02);}
         Berita Masuk
         <span class="nav-badge" id="navBadgeBerita">0</span>
       </div>
-
       <div class="nav-group-label">Analitik</div>
       <div class="nav-item" onclick="showPage('grafik',this)">
         <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Grafik Penjualan
       </div>
-
       <div class="nav-group-label">Akun</div>
       <div class="nav-item" onclick="showPage('profil',this)">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Profil Admin
       </div>
     </nav>
-
     <div class="sidebar-footer">
       <div class="nav-logout" onclick="doLogout()">
         <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -317,11 +325,21 @@ tr:hover td{background:rgba(45,106,39,0.02);}
         <div class="topbar-sub" id="pageSub">Ringkasan aktivitas hari ini</div>
       </div>
       <div class="topbar-right">
-        <div class="topbar-btn" title="Notifikasi">
+        <!-- NOTIF BUTTON -->
+        <div class="topbar-btn" id="notifBtn" title="Notifikasi" onclick="toggleNotif()">
           <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-          <span class="notif-dot"></span>
+          <span class="notif-dot" id="notifDot"></span>
         </div>
-        <button class="refresh-btn" onclick="loadAll()">
+        <!-- NOTIF DROPDOWN -->
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-header">
+            🔔 Notifikasi
+            <span onclick="closeNotif()">Tutup</span>
+          </div>
+          <div id="notifList"></div>
+        </div>
+        <!-- REFRESH BUTTON -->
+        <button class="refresh-btn" id="refreshBtn" onclick="refreshData()">
           <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
           Refresh
         </button>
@@ -369,7 +387,6 @@ tr:hover td{background:rgba(45,106,39,0.02);}
         </div>
 
         <div class="grid-2">
-          <!-- CHART MINI -->
           <div class="chart-card">
             <div class="card-head">
               <div class="card-title">Penjualan <span>Minggu Ini</span></div>
@@ -380,8 +397,6 @@ tr:hover td{background:rgba(45,106,39,0.02);}
             </div>
             <div class="chart-wrap" id="chartMini"></div>
           </div>
-
-          <!-- RECENT ORDERS -->
           <div class="recent-card">
             <div class="card-head">
               <div class="card-title">Pesanan <span>Terbaru</span></div>
@@ -390,7 +405,6 @@ tr:hover td{background:rgba(45,106,39,0.02);}
           </div>
         </div>
 
-        <!-- TABEL BERANDA -->
         <div class="section">
           <div class="section-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D6A27" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10V6a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 6v12a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 18v-4"/></svg>
@@ -558,8 +572,9 @@ const ADMIN_PASS = 'gayomart2026';
 
 let pesananData = [], pembayaranData = [], beritaData = [];
 let pendingAction = null;
+let notifOpen = false;
 
-/* LOGIN */
+/* ===================== LOGIN ===================== */
 function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value.trim();
@@ -578,30 +593,35 @@ function doLogout() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
+  closeNotif();
 }
 
-/* NAVIGASI */
+/* ===================== NAVIGASI ===================== */
 function showPage(name, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   if (el) el.classList.add('active');
   const titles = {
-    beranda: ['Selamat datang, <em>Cima</em> 👋', 'Ringkasan aktivitas hari ini'],
-    pesanan: ['Kelola <em>Pesanan</em>', 'Konfirmasi dan update status pesanan'],
+    beranda:    ['Selamat datang, <em>Cima</em> 👋', 'Ringkasan aktivitas hari ini'],
+    pesanan:    ['Kelola <em>Pesanan</em>', 'Konfirmasi dan update status pesanan'],
     pembayaran: ['Data <em>Pembayaran</em>', 'Riwayat transaksi pembayaran'],
-    berita: ['Berita <em>Masuk</em>', 'Tinjau berita dari masyarakat'],
-    grafik: ['Grafik <em>Penjualan</em>', 'Analitik dan statistik penjualan'],
-    profil: ['Profil <em>Admin</em>', 'Informasi akun administrator']
+    berita:     ['Berita <em>Masuk</em>', 'Tinjau berita dari masyarakat'],
+    grafik:     ['Grafik <em>Penjualan</em>', 'Analitik dan statistik penjualan'],
+    profil:     ['Profil <em>Admin</em>', 'Informasi akun administrator']
   };
   document.getElementById('pageTitle').innerHTML = titles[name][0];
   document.getElementById('pageSub').textContent = titles[name][1];
   if (name === 'grafik') renderGrafik();
   if (name === 'profil') renderProfil();
+  closeNotif();
 }
 
-/* LOAD DATA */
-async function loadAll() { await Promise.all([loadPesanan(), loadPembayaran(), loadBerita()]); }
+/* ===================== LOAD DATA ===================== */
+async function loadAll() {
+  await Promise.all([loadPesanan(), loadPembayaran(), loadBerita()]);
+  updateNotifBadge();
+}
 
 async function fetchSheet(action) {
   const res = await fetch(`${SHEET_URL}?action=${action}`);
@@ -618,7 +638,10 @@ async function loadPesanan() {
     pesananData = await fetchSheet('getPesanan');
     renderPesanan(); renderBeranda(); renderChartMini('minggu');
     document.getElementById('navBadgePesanan').textContent = pesananData.filter(p=>(p.status||'').toLowerCase()==='pending').length;
-  } catch(e) { document.getElementById('loadingPesanan').innerHTML = '❌ Gagal memuat data'; }
+  } catch(e) {
+    document.getElementById('loadingPesanan').innerHTML = '❌ Gagal memuat data';
+    document.getElementById('loadingBeranda').innerHTML = '❌ Gagal memuat data';
+  }
 }
 
 async function loadPembayaran() {
@@ -632,20 +655,103 @@ async function loadBerita() {
   document.getElementById('loadingBerita').style.display = 'block';
   document.getElementById('tabelBerita').style.display = 'none';
   try {
-    beritaData = await fetchSheet('getBerita'); renderBerita();
+    beritaData = await fetchSheet('getBerita');
+    renderBerita();
     document.getElementById('navBadgeBerita').textContent = beritaData.length;
   } catch(e) { document.getElementById('loadingBerita').innerHTML = '❌ Gagal memuat data'; }
 }
 
-/* HELPERS */
+/* ===================== NOTIFIKASI ===================== */
+function updateNotifBadge() {
+  const pendingCount = pesananData.filter(p=>(p.status||'').toLowerCase()==='pending').length;
+  const beritaCount = beritaData.length;
+  const dot = document.getElementById('notifDot');
+  dot.style.display = (pendingCount + beritaCount) > 0 ? 'block' : 'none';
+}
+
+function toggleNotif() {
+  const dropdown = document.getElementById('notifDropdown');
+  notifOpen = !notifOpen;
+  if (notifOpen) {
+    renderNotifList();
+    dropdown.classList.add('open');
+  } else {
+    dropdown.classList.remove('open');
+  }
+}
+
+function closeNotif() {
+  notifOpen = false;
+  document.getElementById('notifDropdown').classList.remove('open');
+}
+
+function renderNotifList() {
+  const pending = pesananData.filter(p=>(p.status||'').toLowerCase()==='pending');
+  let html = '';
+
+  pending.forEach(p => {
+    html += `<div class="notif-item" onclick="showPage('pesanan', document.querySelector('.nav-item:nth-child(3)'))">
+      <div class="notif-icon orange">🛍️</div>
+      <div>
+        <div class="notif-text-title">Pesanan Pending</div>
+        <div class="notif-text-sub">${p.nama_pembeli||'-'} — ${rpFormat(p.total)}</div>
+      </div>
+    </div>`;
+  });
+
+  beritaData.slice(0, 5).forEach(b => {
+    html += `<div class="notif-item" onclick="showPage('berita', document.querySelector('.nav-item:nth-child(5)'))">
+      <div class="notif-icon green">📰</div>
+      <div>
+        <div class="notif-text-title">Berita Masuk</div>
+        <div class="notif-text-sub">${b.judul||'-'}</div>
+      </div>
+    </div>`;
+  });
+
+  if (!html) {
+    html = '<div class="notif-empty">Tidak ada notifikasi baru</div>';
+  }
+
+  document.getElementById('notifList').innerHTML = html;
+}
+
+/* Tutup notif kalau klik di luar */
+document.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('notifDropdown');
+  const btn = document.getElementById('notifBtn');
+  if (notifOpen && dropdown && !dropdown.contains(e.target) && !btn.contains(e.target)) {
+    closeNotif();
+  }
+});
+
+/* ===================== REFRESH ===================== */
+async function refreshData() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  btn.disabled = true;
+  try {
+    await loadAll();
+    showToast('✅ Data berhasil diperbarui!', 'success');
+  } catch(e) {
+    showToast('❌ Gagal memperbarui data', 'error');
+  } finally {
+    setTimeout(() => {
+      btn.classList.remove('spinning');
+      btn.disabled = false;
+    }, 700);
+  }
+}
+
+/* ===================== HELPERS ===================== */
 function badgeStatus(status) {
   const s = (status||'').toLowerCase();
-  if(s==='pending') return `<span class="badge badge-pending">Pending</span>`;
-  if(s==='dikirim') return `<span class="badge badge-dikirim">Dikirim</span>`;
-  if(s==='selesai') return `<span class="badge badge-selesai">Selesai</span>`;
+  if(s==='pending')    return `<span class="badge badge-pending">Pending</span>`;
+  if(s==='dikirim')    return `<span class="badge badge-dikirim">Dikirim</span>`;
+  if(s==='selesai')    return `<span class="badge badge-selesai">Selesai</span>`;
   if(s==='dibatalkan') return `<span class="badge badge-dibatalkan">Dibatalkan</span>`;
-  if(s==='diterima') return `<span class="badge badge-diterima">Diterima</span>`;
-  if(s==='ditolak') return `<span class="badge badge-ditolak">Ditolak</span>`;
+  if(s==='diterima')   return `<span class="badge badge-diterima">Diterima</span>`;
+  if(s==='ditolak')    return `<span class="badge badge-ditolak">Ditolak</span>`;
   return `<span class="badge badge-menunggu">${status||'Menunggu'}</span>`;
 }
 
@@ -666,12 +772,12 @@ function tombolPesanan(id, status) {
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Selesai
     </button>
   </div>`;
-  if(s==='selesai') return `<span style="font-size:12px;color:#2E7D32;font-weight:600">✓ Selesai</span>`;
+  if(s==='selesai')    return `<span style="font-size:12px;color:#2E7D32;font-weight:600">✓ Selesai</span>`;
   if(s==='dibatalkan') return `<span style="font-size:12px;color:#C62828;font-weight:600">✗ Dibatalkan</span>`;
   return '-';
 }
 
-/* RENDER */
+/* ===================== RENDER ===================== */
 function renderBeranda() {
   document.getElementById('loadingBeranda').style.display = 'none';
   document.getElementById('statTotal').textContent = pesananData.length;
@@ -681,17 +787,19 @@ function renderBeranda() {
   document.getElementById('statPendapatan').textContent = rpFormat(pendapatan);
 
   const recent = [...pesananData].reverse().slice(0,5);
-  document.getElementById('recentOrders').innerHTML = recent.length ? recent.map(p=>`
-    <div class="order-item">
-      <div class="order-avatar">${(p.nama_pembeli||'?')[0].toUpperCase()}</div>
-      <div class="order-info">
-        <div class="order-name">${p.nama_pembeli||'-'}</div>
-        <div class="order-time">${p.tanggal||'-'}</div>
-      </div>
-      <div class="order-amount">${rpFormat(p.total)}</div>
-    </div>`).join('') : '<div style="padding:24px;text-align:center;color:#bbb;font-size:13px">Belum ada pesanan</div>';
+  document.getElementById('recentOrders').innerHTML = recent.length
+    ? recent.map(p=>`
+      <div class="order-item">
+        <div class="order-avatar">${(p.nama_pembeli||'?')[0].toUpperCase()}</div>
+        <div class="order-info">
+          <div class="order-name">${p.nama_pembeli||'-'}</div>
+          <div class="order-time">${p.tanggal||'-'}</div>
+        </div>
+        <div class="order-amount">${rpFormat(p.total)}</div>
+      </div>`).join('')
+    : '<div style="padding:24px;text-align:center;color:#bbb;font-size:13px">Belum ada pesanan</div>';
 
-  if(!recent.length) return;
+  if (!recent.length) return;
   document.getElementById('bodyBeranda').innerHTML = recent.map(p=>`<tr>
     <td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td>
     <td><b style="color:#111">${p.nama_pembeli||'-'}</b></td>
@@ -706,7 +814,7 @@ function renderBeranda() {
 
 function renderPesanan() {
   document.getElementById('loadingPesanan').style.display = 'none';
-  if(!pesananData.length) return;
+  if (!pesananData.length) return;
   document.getElementById('bodyPesanan').innerHTML = [...pesananData].reverse().map(p=>`<tr>
     <td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td>
     <td><b style="color:#111">${p.nama_pembeli||'-'}</b></td>
@@ -722,7 +830,7 @@ function renderPesanan() {
 
 function renderPembayaran() {
   document.getElementById('loadingPembayaran').style.display = 'none';
-  if(!pembayaranData.length) return;
+  if (!pembayaranData.length) return;
   document.getElementById('bodyPembayaran').innerHTML = [...pembayaranData].reverse().map(p=>`<tr>
     <td style="font-size:11px;color:#aaa">${p.id_pembayaran||'-'}</td>
     <td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td>
@@ -736,9 +844,10 @@ function renderPembayaran() {
 
 function renderBerita() {
   document.getElementById('loadingBerita').style.display = 'none';
-  if(!beritaData.length) {
+  if (!beritaData.length) {
     document.getElementById('loadingBerita').innerHTML = '<div style="padding:48px;text-align:center;color:#bbb">Belum ada berita masuk</div>';
-    document.getElementById('loadingBerita').style.display = 'block'; return;
+    document.getElementById('loadingBerita').style.display = 'block';
+    return;
   }
   document.getElementById('bodyBerita').innerHTML = [...beritaData].reverse().map(b=>`<tr>
     <td style="font-size:11px;color:#aaa">${b.id_berita||'-'}</td>
@@ -758,7 +867,7 @@ function renderBerita() {
   document.getElementById('tabelBerita').style.display = 'table';
 }
 
-/* GRAFIK */
+/* ===================== GRAFIK ===================== */
 function renderGrafik() {
   switchChartBig('minggu', document.querySelector('#page-grafik .tab-btn'));
   renderChartMetode();
@@ -825,7 +934,7 @@ function switchChartBig(mode, el) {
 
 function renderChartMini(mode) { renderChart('chartMini', mode, 140); }
 
-/* MODAL */
+/* ===================== MODAL ===================== */
 function konfirmasi(id, status, title, body, type) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalBody').textContent = body;
@@ -861,12 +970,14 @@ function updateStatus(id_pesanan, status) {
   setTimeout(()=>loadPesanan(),2500);
 }
 
+/* ===================== TOAST ===================== */
 let toastTimer;
-function showToast(msg,type='success') {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className=`toast ${type} show`;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 3000);
 }
 </script>
 </body>
