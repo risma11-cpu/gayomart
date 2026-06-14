@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kirim Berita Desa — Desa Gayo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hidden;min-height:100vh;}
+
+/* AURORA */
+@keyframes auroraShift{0%{transform:translate(-10%,-10%) scale(1);}33%{transform:translate(5%,8%) scale(1.08);}66%{transform:translate(-5%,12%) scale(0.96);}100%{transform:translate(-10%,-10%) scale(1);}}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.aurora-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.13;animation:auroraShift 14s ease-in-out infinite;}
+.aurora-blob.a1{width:700px;height:500px;top:-120px;left:-100px;background:radial-gradient(ellipse,#2D6A27 0%,transparent 70%);}
+.aurora-blob.a2{width:500px;height:400px;top:30%;right:-80px;background:radial-gradient(ellipse,#4CAF50 0%,transparent 70%);animation-delay:-5s;opacity:0.08;}
+.aurora-blob.a3{width:600px;height:350px;bottom:10%;left:20%;background:radial-gradient(ellipse,#1B5E20 0%,transparent 70%);animation-delay:-9s;opacity:0.09;}
+
+/* NAVBAR */
+.navbar{position:sticky;top:0;z-index:300;background:rgba(250,250,250,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,0.07);padding:0 56px;height:62px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{font-size:16px;font-weight:600;color:#111;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:#2D6A27;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{font-size:13px;color:#666;text-decoration:none;transition:color .2s;}
+.nav-links a:hover{color:#111;}
+.nav-links a.active{color:#111;font-weight:500;}
+.nav-ham{width:38px;height:38px;border-radius:50%;border:1px solid rgba(0,0,0,0.12);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4.5px;cursor:pointer;transition:background .2s;}
+.nav-ham:hover{background:#f5f5f5;}
+.ham-l{width:16px;height:1.5px;background:#111;border-radius:2px;}
+
+/* MOBILE MENU */
+.mobile-menu{position:fixed;top:62px;left:0;right:0;z-index:299;background:rgba(250,250,250,0.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,0.07);padding:16px 24px 24px;display:flex;flex-direction:column;gap:4px;transform:translateY(-110%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;}
+.mobile-menu.open{transform:translateY(0);pointer-events:all;}
+.mobile-menu a{font-size:15px;color:#444;text-decoration:none;padding:12px 8px;border-bottom:1px solid rgba(0,0,0,0.05);transition:color .2s;}
+.mobile-menu a.active{color:#2D6A27;font-weight:500;}
+
+/* MAIN */
+.main{position:relative;z-index:1;min-height:calc(100vh - 62px - 80px);display:flex;align-items:center;justify-content:center;padding:60px 24px;}
+
+/* CARD */
+.card{background:rgba(255,255,255,0.92);border:1px solid rgba(45,106,39,0.12);border-radius:28px;padding:48px 48px;width:100%;max-width:600px;box-shadow:0 8px 40px rgba(0,0,0,0.06);backdrop-filter:blur(12px);}
+
+.card-eyebrow{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#2D6A27;font-weight:600;margin-bottom:10px;}
+.card-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#111;line-height:1.15;letter-spacing:-.5px;margin-bottom:8px;}
+.card-title em{font-style:italic;color:#2D6A27;}
+.card-sub{font-size:14px;color:#888;line-height:1.7;font-weight:300;margin-bottom:36px;}
+
+/* FORM */
+.form-group{margin-bottom:20px;}
+label{display:block;font-size:11px;font-weight:600;color:#888;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px;}
+input,textarea{width:100%;background:#f8f8f8;border:1px solid #e8e8e8;border-radius:14px;padding:13px 16px;color:#111;font-size:14px;font-family:inherit;outline:none;transition:border .2s,background .2s;}
+input:focus,textarea:focus{border-color:#2D6A27;background:#fff;}
+input::placeholder,textarea::placeholder{color:#bbb;}
+textarea{min-height:160px;resize:vertical;line-height:1.65;}
+.char-count{text-align:right;font-size:11px;color:#bbb;margin-top:6px;}
+
+.btn-submit{width:100%;background:#111;color:#fff;border:none;border-radius:100px;padding:15px;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:8px;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.2px;}
+.btn-submit:hover{background:#2D6A27;transform:translateY(-1px);}
+.btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+/* SUCCESS */
+.success-state{display:none;text-align:center;padding:16px 0;}
+.success-icon{width:72px;height:72px;border-radius:50%;background:#f4faf3;border:2px solid #c4ddc0;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px;}
+.success-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#111;margin-bottom:10px;}
+.success-sub{font-size:14px;color:#888;line-height:1.7;max-width:360px;margin:0 auto 28px;font-weight:300;}
+.btn-lagi{background:#fff;border:1px solid rgba(0,0,0,0.14);border-radius:100px;padding:12px 28px;color:#444;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;margin-right:10px;}
+.btn-lagi:hover{border-color:#2D6A27;color:#2D6A27;}
+.btn-home{background:#2D6A27;border:none;border-radius:100px;padding:12px 28px;color:#fff;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;}
+.btn-home:hover{background:#1B5E20;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#111;color:#fff;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:400;z-index:600;transition:transform .35s cubic-bezier(.34,1.4,.64,1);white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* FOOTER */
+.footer{position:relative;z-index:1;background:#0d0d0d;padding:36px 56px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.footer-brand{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px;}
+.footer-brand-dot{width:6px;height:6px;border-radius:50%;background:#2D6A27;}
+.footer-copy{font-size:11.5px;color:rgba(255,255,255,0.25);}
+.footer-back{font-size:12.5px;color:rgba(255,255,255,0.45);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;}
+.footer-back:hover{color:#7DD87A;}
+
+@media(max-width:768px){
+  .navbar{padding:0 20px;}.nav-links{display:none;}
+  .card{padding:32px 24px;}
+  .card-title{font-size:26px;}
+  .footer{padding:28px 20px;}
+}
+@media(min-width:769px){.nav-ham{display:none;}}
+</style>
+</head>
+<body>
+
+<div class="aurora">
+  <div class="aurora-blob a1"></div>
+  <div class="aurora-blob a2"></div>
+  <div class="aurora-blob a3"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="nav-brand"><span class="nav-dot"></span>Desa Gayo</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="index.html#intro">Tentang</a></li>
+    <li><a href="marketplace.html">Marketplace</a></li>
+    <li><a href="berita.html" class="active">Kirim Berita</a></li>
+    <li><a href="#">Kontak</a></li>
+  </ul>
+  <div class="nav-ham" id="hamBtn" aria-label="Menu">
+    <span class="ham-l"></span><span class="ham-l"></span><span class="ham-l"></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Beranda</a>
+  <a href="index.html#intro">Tentang</a>
+  <a href="marketplace.html">Marketplace</a>
+  <a href="berita.html" class="active">Kirim Berita</a>
+  <a href="#">Kontak</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="card">
+
+    <!-- FORM STATE -->
+    <div id="formState">
+      <div class="card-eyebrow">🌿 Desa Gayo</div>
+      <h1 class="card-title">Kirim <em>Berita</em> Desa</h1>
+      <p class="card-sub">Punya informasi atau cerita dari desa? Bagikan ke seluruh masyarakat! Admin akan meninjau sebelum ditampilkan di halaman desa.</p>
+
+      <div class="form-group">
+        <label>Nama Kamu</label>
+        <input type="text" id="inputNama" placeholder="Masukkan nama lengkap kamu" maxlength="100">
+      </div>
+
+      <div class="form-group">
+        <label>Judul Berita</label>
+        <input type="text" id="inputJudul" placeholder="Contoh: Panen Raya di Gayo Berhasil!" maxlength="150">
+      </div>
+
+      <div class="form-group">
+        <label>Isi Berita</label>
+        <textarea id="inputIsi" placeholder="Ceritakan informasi atau kejadian yang ingin kamu bagikan ke masyarakat desa..." maxlength="2000" oninput="updateChar()"></textarea>
+        <div class="char-count"><span id="charCount">0</span>/2000 karakter</div>
+      </div>
+
+      <button class="btn-submit" id="btnKirim" onclick="kirimBerita()">
+        📨 Kirim Berita ke Desa
+      </button>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-state" id="successState">
+      <div class="success-icon">✅</div>
+      <h2 class="success-title">Berita Terkirim!</h2>
+      <p class="success-sub">Terima kasih sudah berbagi! Admin akan meninjau berita kamu dan menampilkannya di halaman desa Gayo.</p>
+      <button class="btn-lagi" onclick="kirimLagi()">Kirim Berita Lain</button>
+      <a href="index.html"><button class="btn-home">Kembali ke Beranda</button></a>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<iframe name="hidden_iframe" style="display:none"></iframe>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand"><span class="footer-brand-dot"></span>Desa Gayo</div>
+  <div class="footer-copy">© 2026 Pemerintah Kabupaten Aceh Tengah</div>
+  <a href="index.html" class="footer-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12 7H2M7 12l-5-5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Kembali ke Beranda
+  </a>
+</footer>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx79L5DfLVQAzvR9lxxJ5yfgRyrZRvyxUmjDlyUNhdtGsr9UiYwuCwUG2_vMHwGM5WO/exec';
+
+function updateChar() {
+  document.getElementById('charCount').textContent = document.getElementById('inputIsi').value.length;
+}
+
+function kirimBerita() {
+  const nama  = document.getElementById('inputNama').value.trim();
+  const judul = document.getElementById('inputJudul').value.trim();
+  const isi   = document.getElementById('inputIsi').value.trim();
+
+  if (!nama)              { showToast('Masukkan nama kamu dulu!'); return; }
+  if (!judul)             { showToast('Judul berita tidak boleh kosong!'); return; }
+  if (isi.length < 20)    { showToast('Isi berita minimal 20 karakter!'); return; }
+
+  const btn = document.getElementById('btnKirim');
+  btn.textContent = 'Mengirim...';
+  btn.disabled = true;
+
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = SHEET_URL;
+  form.target = 'hidden_iframe';
+
+  const fields = {
+    action:  'tambahBerita',
+    judul:   judul,
+    isi:     `[${nama}] ${isi}`,
+    id_desa: 'DESA-001'
+  };
+
+  Object.entries(fields).forEach(([k, v]) => {
+    const inp = document.createElement('input');
+    inp.type = 'hidden'; inp.name = k; inp.value = v;
+    form.appendChild(inp);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+
+  setTimeout(() => {
+    btn.textContent = '📨 Kirim Berita ke Desa';
+    btn.disabled = false;
+    document.getElementById('formState').style.display = 'none';
+    document.getElementById('successState').style.display = 'block';
+  }, 2500);
+}
+
+function kirimLagi() {
+  document.getElementById('inputNama').value = '';
+  document.getElementById('inputJudul').value = '';
+  document.getElementById('inputIsi').value = '';
+  document.getElementById('charCount').textContent = '0';
+  document.getElementById('formState').style.display = 'block';
+  document.getElementById('successState').style.display = 'none';
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* MOBILE MENU */
+(function(){
+  const ham = document.getElementById('hamBtn');
+  const menu = document.getElementById('mobileMenu');
+  ham.addEventListener('click', () => menu.classList.toggle('open'));
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+  document.addEventListener('click', e => { if(!menu.contains(e.target) && !ham.contains(e.target)) menu.classList.remove('open'); });
+})();
+</script>
+</body>
+</html>
