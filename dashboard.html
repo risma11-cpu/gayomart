@@ -233,6 +233,71 @@ tr:hover td{background:rgba(45,106,39,0.02);}
 
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr);}.grid-2{grid-template-columns:1fr;}.grafik-grid{grid-template-columns:1fr;}}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);}.main{margin-left:0;}.stats-grid{grid-template-columns:1fr 1fr;}}
+/* ================= LAYOUT GRAFIK BARU ================= */
+.grafik-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 Kolom di bawah */
+  grid-template-rows: auto auto;  /* 2 Baris (Atas, Bawah) */
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.full-width { grid-column: 1 / -1; } /* Chart atas melebar */
+
+/* ================= LINE CHART (SVG) ================= */
+.chart-area {
+  height: 200px;
+  width: 100%;
+  position: relative;
+}
+.chart-legend { display: flex; gap: 12px; font-size: 11px; font-weight: 600; color: #666; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot.dark-green { background: #2D6A27; }
+.dot.light-green { background: #81C784; }
+
+/* ================= DONUT CHART ================= */
+.donut-container {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; padding: 20px 0;
+}
+.donut-ring {
+  width: 140px; height: 140px; border-radius: 50%;
+  /* Gradient akan di-set via JS */
+  background: conic-gradient(#ddd 0% 100%); 
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+/* Lubang tengah Donut */
+.donut-ring::before {
+  content: ''; position: absolute; width: 100px; height: 100px;
+  background: rgba(255,255,255,0.8); border-radius: 50%;
+  backdrop-filter: blur(10px); z-index: 2;
+}
+.donut-label { position: absolute; z-index: 3; text-align: center; }
+.donut-label .label-val { font-size: 24px; font-weight: 700; color: #2D6A27; line-height: 1; }
+.donut-label .label-text { font-size: 11px; color: #aaa; margin-top: 4px; }
+.donut-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; }
+
+/* ================= STATUS BAR CHART ================= */
+.vertical-bars {
+  height: 180px; padding-top: 20px; /* Biar ruang untuk nilai tertinggi */
+}
+/* Override bar style untuk vertical chart */
+.vertical-bars .bar {
+  border-radius: 6px; width: 40px; /* Lebar bar lebih tetap */
+  background: var(--bg-color, #ccc); /* Warna dinamis dari JS */
+}
+/* Label status di bawah */
+.vertical-bars .bar-label {
+  margin-top: 8px; font-size: 11px; font-weight: 600; color: #666;
+}
+/* Nilai di atas bar */
+.vertical-bars .bar::after {
+  content: attr(data-val); position: absolute; top: -20px; left: 50%;
+  transform: translateX(-50%); font-size: 11px; font-weight: 700; color: #333;
+}
 </style>
 </head>
 <body>
@@ -471,31 +536,48 @@ tr:hover td{background:rgba(45,106,39,0.02);}
         </div>
       </div>
 
-      <!-- GRAFIK -->
-      <div class="page" id="page-grafik">
-        <div class="grafik-grid">
-          <div class="big-chart">
-            <div class="card-head">
-              <div class="card-title">Penjualan <span>per Minggu</span></div>
-              <div class="tab-group">
-                <button class="tab-btn active" onclick="switchChartBig('minggu',this)">Minggu</button>
-                <button class="tab-btn" onclick="switchChartBig('bulan',this)">Bulan</button>
-              </div>
-            </div>
-            <div class="big-chart-wrap" id="chartBig"></div>
-          </div>
-          <div class="big-chart">
-            <div class="card-head">
-              <div class="card-title">Metode <span>Pembayaran</span></div>
-            </div>
-            <div id="chartMetode" style="padding:16px 0"></div>
-          </div>
-        </div>
-        <div class="section">
-          <div class="section-title">Ringkasan Statistik</div>
-          <div class="stats-grid" id="grafikStats"></div>
+     <!-- GRAFIK (UPGRADE) -->
+<div class="page" id="page-grafik">
+  <div class="grafik-grid">
+    
+    <!-- 1. LINE CHART (Atas - Penuh) -->
+    <div class="chart-card full-width">
+      <div class="card-head">
+        <div class="card-title">Penjualan Minggu Ini</div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="dot dark-green"></span>Penjualan</span>
+          <span class="legend-item"><span class="dot light-green"></span>Target</span>
         </div>
       </div>
+      <!-- Area SVG untuk Garis -->
+      <div class="chart-area" id="lineChartContainer"></div>
+    </div>
+
+    <!-- 2. DONUT CHART (Bawah Kiri) -->
+    <div class="chart-card">
+      <div class="card-head">
+        <div class="card-title">Metode Pembayaran</div>
+      </div>
+      <div class="donut-container" id="donutChart">
+        <div class="donut-ring" id="donutRing"></div>
+        <div class="donut-label">
+          <div class="label-val" id="totalMetode">0</div>
+          <div class="label-text">Transaksi</div>
+        </div>
+      </div>
+      <div class="donut-legend" id="donutLegend"></div>
+    </div>
+
+    <!-- 3. STATUS BAR CHART (Bawah Kanan) -->
+    <div class="chart-card">
+      <div class="card-head">
+        <div class="card-title">Status Pesanan</div>
+      </div>
+      <div class="chart-wrap vertical-bars" id="statusChart"></div>
+    </div>
+
+  </div>
+</div>
 
       <!-- PROFIL -->
       <div class="page" id="page-profil">
@@ -596,12 +678,17 @@ function doLogout() {
   closeNotif();
 }
 
-/* ===================== NAVIGASI ===================== */
+/* ===================== NAVIGASI UPDATE ===================== */
 function showPage(name, el) {
+  // Sembunyikan semua halaman & matikan menu aktif
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  
+  // Tampilkan halaman yang dipilih
   document.getElementById('page-' + name).classList.add('active');
   if (el) el.classList.add('active');
+  
+  // Set Judul Topbar
   const titles = {
     beranda:    ['Selamat datang, <em>Cima</em> 👋', 'Ringkasan aktivitas hari ini'],
     pesanan:    ['Kelola <em>Pesanan</em>', 'Konfirmasi dan update status pesanan'],
@@ -612,9 +699,165 @@ function showPage(name, el) {
   };
   document.getElementById('pageTitle').innerHTML = titles[name][0];
   document.getElementById('pageSub').textContent = titles[name][1];
+  
+  // TRIGGER GRAFIK (Jika membuka halaman Grafik)
   if (name === 'grafik') renderGrafik();
   if (name === 'profil') renderProfil();
+  
   closeNotif();
+}
+
+/* ===================== LOGIKA GRAFIK BARU ===================== */
+
+function renderGrafik() {
+  // 1. Proses Data Status Pesanan
+  const statusCount = { 'Pending': 0, 'Dikirim': 0, 'Selesai': 0, 'Batal': 0 };
+  pesananData.forEach(p => {
+    const s = (p.status || '').split(' ')[0]; // Ambil kata pertama status
+    if(statusCount[s] !== undefined) statusCount[s]++;
+  });
+  drawStatusChart(statusCount);
+
+  // 2. Proses Data Metode Pembayaran
+  const methods = { 'Transfer': 0, 'COD': 0, 'QRIS': 0 };
+  pembayaranData.forEach(p => {
+    const m = (p.metode || '').toUpperCase();
+    if(m.includes('TRANSFER')) methods['Transfer']++;
+    else if(m.includes('COD') || m.includes('DI TEMPAT')) methods['COD']++;
+    else methods['QRIS']++;
+  });
+  drawDonutChart(methods);
+
+  // 3. Gambar Line Chart (Simulasi)
+  drawLineChart();
+}
+
+// --- FUNGSI GAMBAR STATUS BAR CHART ---
+function drawStatusChart(data) {
+  const colors = { 'Pending': '#E67E22', 'Dikirim': '#1976D2', 'Selesai': '#2D6A27', 'Batal': '#e53935' };
+  const container = document.getElementById('statusChart');
+  
+  if(Object.values(data).reduce((a,b)=>a+b, 0) === 0) {
+    container.innerHTML = '<div style="color:#aaa;width:100%;text-align:center;padding-top:50px">Belum ada data</div>';
+    return;
+  }
+
+  const maxVal = Math.max(...Object.values(data)) || 1;
+  let html = '';
+  
+  // Urutan bar yang ingin ditampilkan
+  const order = ['Pending', 'Dikirim', 'Selesai', 'Batal'];
+  
+  order.forEach(key => {
+    const val = data[key];
+    if (val > 0) {
+      const height = (val / maxVal) * 80; 
+      html += `
+      <div class="bar-col">
+        <div class="bar" style="height:${height}%; --bg-color:${colors[key]}" data-val="${val}"></div>
+        <div class="bar-label">${key}</div>
+      </div>`;
+    }
+  });
+  container.innerHTML = html;
+}
+
+// --- FUNGSI GAMBAR DONUT CHART ---
+function drawDonutChart(data) {
+  const total = Object.values(data).reduce((a, b) => a + b, 0);
+  document.getElementById('totalMetode').textContent = total || 0;
+  
+  const colorMap = { 'Transfer': '#2D6A27', 'COD': '#4CAF50', 'QRIS': '#81C784' };
+  let gradientStr = '';
+  let currentPercent = 0;
+  let legendHtml = '';
+  
+  if (total === 0) {
+    document.getElementById('donutRing').style.background = '#eee';
+    document.getElementById('donutLegend').innerHTML = '<span style="color:#aaa;font-size:11px">Belum ada data</span>';
+    return;
+  }
+
+  for (const [key, val] of Object.entries(data)) {
+    if(val > 0) {
+      const percent = (val / total) * 100;
+      const nextPercent = currentPercent + percent;
+      const color = colorMap[key] || '#ccc';
+      
+      gradientStr += `${color} ${currentPercent}% ${nextPercent}%, `;
+      currentPercent = nextPercent;
+      
+      legendHtml += `
+      <div class="legend-row">
+        <span style="width:8px;height:8px;border-radius:50%;background:${color}"></span>
+        ${key} ${Math.round(percent)}%
+      </div>`;
+    }
+  }
+  
+  gradientStr = gradientStr.slice(0, -2); // Hapus koma akhir
+  
+  document.getElementById('donutRing').style.background = `conic-gradient(${gradientStr})`;
+  document.getElementById('donutLegend').innerHTML = legendHtml;
+}
+
+// --- FUNGSI GAMBAR LINE CHART (SVG) ---
+function drawLineChart() {
+  const container = document.getElementById('lineChartContainer');
+  const width = container.clientWidth || 600; // Fallback width
+  const height = 200;
+  
+  // Data Dummy Harian (Simulasi visual cantik)
+  const days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+  const salesData = [12, 19, 15, 25, 22, 30, 28]; 
+  const targetData = [20, 25, 20, 30, 25, 35, 32]; 
+  
+  const maxVal = Math.max(...targetData) + 5;
+  
+  // Convert Angka jadi Koordinat X,Y
+  const getPoints = (arr) => {
+    return arr.map((val, idx) => {
+      const x = (idx / (arr.length - 1)) * width;
+      const y = height - ((val / maxVal) * height);
+      return `${x},${y}`;
+    }).join(' ');
+  };
+  
+  const pointsSales = getPoints(salesData);
+  const pointsTarget = getPoints(targetData);
+  
+  // Generate Label Hari (Sen, Sel...)
+  let labels = '';
+  days.forEach((d, i) => {
+    const x = (i / (days.length - 1)) * width;
+    labels += `<text x="${x}" y="${height - 5}" text-anchor="middle" font-size="10" fill="#aaa">${d}</text>`;
+  });
+
+  // SVG String
+  const svg = `
+    <svg width="${width}" height="${height}" style="overflow:visible">
+      <!-- Garis Bawah -->
+      <line x1="0" y1="${height}" x2="${width}" y2="${height}" stroke="#eee" stroke-width="1" />
+      
+      <!-- Line Target (Putus-putus, Hijau Muda) -->
+      <polyline points="${pointsTarget}" fill="none" stroke="#81C784" stroke-width="2" stroke-dasharray="5,5" stroke-opacity="0.7"/>
+      
+      <!-- Line Penjualan (Solid, Hijau Tua) -->
+      <polyline points="${pointsSales}" fill="none" stroke="#2D6A27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <!-- Titik Data Penjualan -->
+      ${salesData.map((val, i) => {
+        const x = (i / (salesData.length - 1)) * width;
+        const y = height - ((val / maxVal) * height);
+        return `<circle cx="${x}" cy="${y}" r="4" fill="#fff" stroke="#2D6A27" stroke-width="2"/>`;
+      }).join('')}
+      
+      <!-- Label Hari -->
+      ${labels}
+    </svg>
+  `;
+  
+  container.innerHTML = svg;
 }
 
 /* ===================== LOAD DATA ===================== */
