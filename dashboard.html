@@ -701,13 +701,15 @@ function showPage(name, el) {
 
 /* ===================== LOGIKA GRAFIK BARU ===================== */
 function renderGrafik() {
+  // 1. Proses Data Status Pesanan
   const statusCount = { 'Pending': 0, 'Dikirim': 0, 'Selesai': 0, 'Batal': 0 };
   pesananData.forEach(p => {
-    const s = (p.status || '').split(' ')[0];
+    const s = (p.status || '').split(' ')[0]; // Ambil kata pertama status
     if(statusCount[s] !== undefined) statusCount[s]++;
   });
   drawStatusChart(statusCount);
 
+  // 2. Proses Data Metode Pembayaran
   const methods = { 'Transfer': 0, 'COD': 0, 'QRIS': 0 };
   pembayaranData.forEach(p => {
     const m = (p.metode || '').toUpperCase();
@@ -716,7 +718,169 @@ function renderGrafik() {
     else methods['QRIS']++;
   });
   drawDonutChart(methods);
+
+  // 3. Gambar Line Chart (Real Data)
   drawLineChart();
+}
+
+// --- FUNGSI GAMBAR STATUS BAR CHART ---
+function drawStatusChart(data) {
+  const colors = { 'Pending': '#E67E22', 'Dikirim': '#1976D2', 'Selesai': '#2D6A27', 'Batal': '#e53935' };
+  const container = document.getElementById('statusChart');
+  
+  if(Object.values(data).reduce((a,b)=>a+b, 0) === 0) {
+    container.innerHTML = '<div style="color:#aaa;width:100%;text-align:center;padding-top:50px">Belum ada data</div>';
+    return;
+  }
+
+  const maxVal = Math.max(...Object.values(data)) || 1;
+  let html = '';
+  
+  // Urutan bar yang ingin ditampilkan
+  const order = ['Pending', 'Dikirim', 'Selesai', 'Batal'];
+  
+  order.forEach(key => {
+    const val = data[key];
+    if (val > 0) {
+      const height = (val / maxVal) * 80; 
+      html += `
+      <div class="bar-col">
+        <div class="bar" style="height:${height}%; --bg-color:${colors[key]}" data-val="${val}"></div>
+        <div class="bar-label">${key}</div>
+      </div>`;
+    }
+  });
+  container.innerHTML = html;
+}
+
+// --- FUNGSI GAMBAR DONUT CHART ---
+function drawDonutChart(data) {
+  const total = Object.values(data).reduce((a, b) => a + b, 0);
+  document.getElementById('totalMetode').textContent = total || 0;
+  
+  const colorMap = { 'Transfer': '#2D6A27', 'COD': '#4CAF50', 'QRIS': '#81C784' };
+  let gradientStr = '';
+  let currentPercent = 0;
+  let legendHtml = '';
+  
+  if (total === 0) {
+    document.getElementById('donutRing').style.background = '#eee';
+    document.getElementById('donutLegend').innerHTML = '<span style="color:#aaa;font-size:11px">Belum ada data</span>';
+    return;
+  }
+
+  for (const [key, val] of Object.entries(data)) {
+    if(val > 0) {
+      const percent = (val / total) * 100;
+      const nextPercent = currentPercent + percent;
+      const color = colorMap[key] || '#ccc';
+      
+      gradientStr += `${color} ${currentPercent}% ${nextPercent}%, `;
+      currentPercent = nextPercent;
+      
+      legendHtml += `
+      <div class="legend-row">
+        <span style="width:8px;height:8px;border-radius:50%;background:${color}"></span>
+        ${key} ${Math.round(percent)}%
+      </div>`;
+    }
+  }
+  
+  gradientStr = gradientStr.slice(0, -2); // Hapus koma akhir
+  
+  document.getElementById('donutRing').style.background = `conic-gradient(${gradientStr})`;
+  document.getElementById('donutLegend').innerHTML = legendHtml;
+}
+
+// --- FUNGSI GAMBAR LINE CHART (NYAMBUNG DATABASE ASLI) ---
+function drawLineChart() {
+  const container = document.getElementById('lineChartContainer');
+  const width = container.clientWidth || 600;
+  const height = 200;
+  const days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+  
+  // 1. HITUNG DATA REAL DARI DATABASE
+  const salesReal = { 'Sen': 0, 'Sel': 0, 'Rab': 0, 'Kam': 0, 'Jum': 0, 'Sab': 0, 'Min': 0 };
+  
+  pesananData.forEach(p => {
+    // Filter pesanan selesai aja (atau hapus if (p.status === 'Selesai') kalau mau semua)
+    if (p.status === 'Selesai' && p.tanggal) {
+      // Parsing Tanggal (Format DD/MM/YYYY)
+      const parts = p.tanggal.split('/'); 
+      if (parts.length === 3) {
+        const d = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10) - 1;
+        const y = parseInt(parts[2], 10);
+        const dateObj = new Date(y, m, d);
+        
+        // Mapping Index Hari (0=Minggu, 1=Senin, dst...)
+        const dayIndex = dateObj.getDay();
+        const dayName = days[dayIndex];
+        
+        // Jumlahkan Total Uang (Rp)
+        salesReal[dayName] += (parseInt(p.total) || 0);
+      }
+    }
+  });
+
+  // Ambil data per hari sesuai urutan hari
+  const salesData = days.map(d => salesReal[d]);
+  
+  // 2. HITUNG TARGET (Otomatis 20% di atas Penjualan Tertinggi)
+  // Supaya grafik terlihat dinamis
+  const maxSales = Math.max(...salesData, 10000); // Minimal 10rb biar gak error
+  const targetData = salesData.map(v => v * 1.2); 
+  
+  const maxVal = Math.max(...targetData) + 50000; // Buffer sedikit di atas
+  
+  // 3. CONVERT ANGKA JADI KOORDINAT GRAFIK
+  const getPoints = (arr) => {
+    return arr.map((val, idx) => {
+      const x = (idx / (arr.length - 1)) * width;
+      const y = height - ((val / maxVal) * height);
+      return `${x},${y}`;
+    }).join(' ');
+  };
+  
+  const pointsSales = getPoints(salesData);
+  const pointsTarget = getPoints(targetData);
+  
+  // 4. GENERATE LABEL HARI
+  let labels = '';
+  days.forEach((d, i) => {
+    const x = (i / (days.length - 1)) * width;
+    labels += `<text x="${x}" y="${height - 5}" text-anchor="middle" font-size="10" fill="#aaa">${d}</text>`;
+  });
+
+  // 5. GAMBAR SVG
+  const svg = `
+    <svg width="${width}" height="${height}" style="overflow:visible">
+      <!-- Garis Bawah -->
+      <line x1="0" y1="${height}" x2="${width}" y2="${height}" stroke="#eee" stroke-width="1" />
+      
+      <!-- Line Target (Putus-putus, Hijau Muda) -->
+      <polyline points="${pointsTarget}" fill="none" stroke="#81C784" stroke-width="2" stroke-dasharray="5,5" stroke-opacity="0.7"/>
+      
+      <!-- Line Penjualan (Solid, Hijau Tua) -->
+      <polyline points="${pointsSales}" fill="none" stroke="#2D6A27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <!-- Titik Data Penjualan -->
+      ${salesData.map((val, i) => {
+        // Jangan gambar titik kalau valuenya 0
+        if(val > 0) {
+          const x = (i / (salesData.length - 1)) * width;
+          const y = height - ((val / maxVal) * height);
+          return `<circle cx="${x}" cy="${y}" r="4" fill="#fff" stroke="#2D6A27" stroke-width="2"/>`;
+        }
+        return '';
+      }).join('')}
+      
+      <!-- Label Hari -->
+      ${labels}
+    </svg>
+  `;
+  
+  container.innerHTML = svg;
 }
 
 function drawStatusChart(data) {
