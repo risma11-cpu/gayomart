@@ -680,15 +680,10 @@ function doLogout() {
 
 /* ===================== NAVIGASI UPDATE ===================== */
 function showPage(name, el) {
-  // Sembunyikan semua halaman & matikan menu aktif
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  
-  // Tampilkan halaman yang dipilih
   document.getElementById('page-' + name).classList.add('active');
   if (el) el.classList.add('active');
-  
-  // Set Judul Topbar
   const titles = {
     beranda:    ['Selamat datang, <em>Cima</em> 👋', 'Ringkasan aktivitas hari ini'],
     pesanan:    ['Kelola <em>Pesanan</em>', 'Konfirmasi dan update status pesanan'],
@@ -699,26 +694,20 @@ function showPage(name, el) {
   };
   document.getElementById('pageTitle').innerHTML = titles[name][0];
   document.getElementById('pageSub').textContent = titles[name][1];
-  
-  // TRIGGER GRAFIK (Jika membuka halaman Grafik)
   if (name === 'grafik') renderGrafik();
   if (name === 'profil') renderProfil();
-  
   closeNotif();
 }
 
 /* ===================== LOGIKA GRAFIK BARU ===================== */
-
 function renderGrafik() {
-  // 1. Proses Data Status Pesanan
   const statusCount = { 'Pending': 0, 'Dikirim': 0, 'Selesai': 0, 'Batal': 0 };
   pesananData.forEach(p => {
-    const s = (p.status || '').split(' ')[0]; // Ambil kata pertama status
+    const s = (p.status || '').split(' ')[0];
     if(statusCount[s] !== undefined) statusCount[s]++;
   });
   drawStatusChart(statusCount);
 
-  // 2. Proses Data Metode Pembayaran
   const methods = { 'Transfer': 0, 'COD': 0, 'QRIS': 0 };
   pembayaranData.forEach(p => {
     const m = (p.metode || '').toUpperCase();
@@ -727,136 +716,85 @@ function renderGrafik() {
     else methods['QRIS']++;
   });
   drawDonutChart(methods);
-
-  // 3. Gambar Line Chart (Simulasi)
   drawLineChart();
 }
 
-// --- FUNGSI GAMBAR STATUS BAR CHART ---
 function drawStatusChart(data) {
   const colors = { 'Pending': '#E67E22', 'Dikirim': '#1976D2', 'Selesai': '#2D6A27', 'Batal': '#e53935' };
   const container = document.getElementById('statusChart');
-  
   if(Object.values(data).reduce((a,b)=>a+b, 0) === 0) {
     container.innerHTML = '<div style="color:#aaa;width:100%;text-align:center;padding-top:50px">Belum ada data</div>';
     return;
   }
-
   const maxVal = Math.max(...Object.values(data)) || 1;
   let html = '';
-  
-  // Urutan bar yang ingin ditampilkan
   const order = ['Pending', 'Dikirim', 'Selesai', 'Batal'];
-  
   order.forEach(key => {
     const val = data[key];
     if (val > 0) {
       const height = (val / maxVal) * 80; 
-      html += `
-      <div class="bar-col">
-        <div class="bar" style="height:${height}%; --bg-color:${colors[key]}" data-val="${val}"></div>
-        <div class="bar-label">${key}</div>
-      </div>`;
+      html += `<div class="bar-col"><div class="bar" style="height:${height}%; --bg-color:${colors[key]}" data-val="${val}"></div><div class="bar-label">${key}</div></div>`;
     }
   });
   container.innerHTML = html;
 }
 
-// --- FUNGSI GAMBAR DONUT CHART ---
 function drawDonutChart(data) {
   const total = Object.values(data).reduce((a, b) => a + b, 0);
   document.getElementById('totalMetode').textContent = total || 0;
-  
   const colorMap = { 'Transfer': '#2D6A27', 'COD': '#4CAF50', 'QRIS': '#81C784' };
-  let gradientStr = '';
-  let currentPercent = 0;
-  let legendHtml = '';
-  
+  let gradientStr = ''; let currentPercent = 0; let legendHtml = '';
   if (total === 0) {
     document.getElementById('donutRing').style.background = '#eee';
     document.getElementById('donutLegend').innerHTML = '<span style="color:#aaa;font-size:11px">Belum ada data</span>';
     return;
   }
-
   for (const [key, val] of Object.entries(data)) {
     if(val > 0) {
       const percent = (val / total) * 100;
       const nextPercent = currentPercent + percent;
       const color = colorMap[key] || '#ccc';
-      
       gradientStr += `${color} ${currentPercent}% ${nextPercent}%, `;
       currentPercent = nextPercent;
-      
-      legendHtml += `
-      <div class="legend-row">
-        <span style="width:8px;height:8px;border-radius:50%;background:${color}"></span>
-        ${key} ${Math.round(percent)}%
-      </div>`;
+      legendHtml += `<div class="legend-row"><span style="width:8px;height:8px;border-radius:50%;background:${color}"></span>${key} ${Math.round(percent)}%</div>`;
     }
   }
-  
-  gradientStr = gradientStr.slice(0, -2); // Hapus koma akhir
-  
+  gradientStr = gradientStr.slice(0, -2);
   document.getElementById('donutRing').style.background = `conic-gradient(${gradientStr})`;
   document.getElementById('donutLegend').innerHTML = legendHtml;
 }
 
-// --- FUNGSI GAMBAR LINE CHART (SVG) ---
 function drawLineChart() {
   const container = document.getElementById('lineChartContainer');
-  const width = container.clientWidth || 600; // Fallback width
+  const width = container.clientWidth || 600;
   const height = 200;
-  
-  // Data Dummy Harian (Simulasi visual cantik)
   const days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
   const salesData = [12, 19, 15, 25, 22, 30, 28]; 
   const targetData = [20, 25, 20, 30, 25, 35, 32]; 
-  
   const maxVal = Math.max(...targetData) + 5;
-  
-  // Convert Angka jadi Koordinat X,Y
-  const getPoints = (arr) => {
-    return arr.map((val, idx) => {
-      const x = (idx / (arr.length - 1)) * width;
-      const y = height - ((val / maxVal) * height);
-      return `${x},${y}`;
-    }).join(' ');
-  };
-  
+  const getPoints = (arr) => arr.map((val, idx) => {
+    const x = (idx / (arr.length - 1)) * width;
+    const y = height - ((val / maxVal) * height);
+    return `${x},${y}`;
+  }).join(' ');
   const pointsSales = getPoints(salesData);
   const pointsTarget = getPoints(targetData);
-  
-  // Generate Label Hari (Sen, Sel...)
   let labels = '';
   days.forEach((d, i) => {
     const x = (i / (days.length - 1)) * width;
     labels += `<text x="${x}" y="${height - 5}" text-anchor="middle" font-size="10" fill="#aaa">${d}</text>`;
   });
-
-  // SVG String
-  const svg = `
-    <svg width="${width}" height="${height}" style="overflow:visible">
-      <!-- Garis Bawah -->
-      <line x1="0" y1="${height}" x2="${width}" y2="${height}" stroke="#eee" stroke-width="1" />
-      
-      <!-- Line Target (Putus-putus, Hijau Muda) -->
-      <polyline points="${pointsTarget}" fill="none" stroke="#81C784" stroke-width="2" stroke-dasharray="5,5" stroke-opacity="0.7"/>
-      
-      <!-- Line Penjualan (Solid, Hijau Tua) -->
-      <polyline points="${pointsSales}" fill="none" stroke="#2D6A27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      
-      <!-- Titik Data Penjualan -->
-      ${salesData.map((val, i) => {
+  const svg = `<svg width="${width}" height="${height}" style="overflow:visible">
+    <line x1="0" y1="${height}" x2="${width}" y2="${height}" stroke="#eee" stroke-width="1" />
+    <polyline points="${pointsTarget}" fill="none" stroke="#81C784" stroke-width="2" stroke-dasharray="5,5" stroke-opacity="0.7"/>
+    <polyline points="${pointsSales}" fill="none" stroke="#2D6A27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    ${salesData.map((val, i) => {
         const x = (i / (salesData.length - 1)) * width;
         const y = height - ((val / maxVal) * height);
         return `<circle cx="${x}" cy="${y}" r="4" fill="#fff" stroke="#2D6A27" stroke-width="2"/>`;
-      }).join('')}
-      
-      <!-- Label Hari -->
-      ${labels}
-    </svg>
-  `;
-  
+    }).join('')}
+    ${labels}
+  </svg>`;
   container.innerHTML = svg;
 }
 
@@ -931,7 +869,6 @@ function closeNotif() {
 function renderNotifList() {
   const pending = pesananData.filter(p=>(p.status||'').toLowerCase()==='pending');
   let html = '';
-
   pending.forEach(p => {
     html += `<div class="notif-item" onclick="showPage('pesanan', document.querySelector('.nav-item:nth-child(3)'))">
       <div class="notif-icon orange">🛍️</div>
@@ -941,7 +878,6 @@ function renderNotifList() {
       </div>
     </div>`;
   });
-
   beritaData.slice(0, 5).forEach(b => {
     html += `<div class="notif-item" onclick="showPage('berita', document.querySelector('.nav-item:nth-child(5)'))">
       <div class="notif-icon green">📰</div>
@@ -951,15 +887,10 @@ function renderNotifList() {
       </div>
     </div>`;
   });
-
-  if (!html) {
-    html = '<div class="notif-empty">Tidak ada notifikasi baru</div>';
-  }
-
+  if (!html) html = '<div class="notif-empty">Tidak ada notifikasi baru</div>';
   document.getElementById('notifList').innerHTML = html;
 }
 
-/* Tutup notif kalau klik di luar */
 document.addEventListener('click', function(e) {
   const dropdown = document.getElementById('notifDropdown');
   const btn = document.getElementById('notifBtn');
@@ -1020,7 +951,7 @@ function tombolPesanan(id, status) {
   return '-';
 }
 
-/* ===================== RENDER ===================== */
+/* ===================== RENDER (UMUM) ===================== */
 function renderBeranda() {
   document.getElementById('loadingBeranda').style.display = 'none';
   document.getElementById('statTotal').textContent = pesananData.length;
@@ -1028,60 +959,26 @@ function renderBeranda() {
   document.getElementById('statDikirim').textContent = pesananData.filter(p=>(p.status||'').toLowerCase()==='dikirim').length;
   const pendapatan = pesananData.filter(p=>(p.status||'').toLowerCase()==='selesai').reduce((s,p)=>s+(parseInt(p.total)||0),0);
   document.getElementById('statPendapatan').textContent = rpFormat(pendapatan);
-
   const recent = [...pesananData].reverse().slice(0,5);
   document.getElementById('recentOrders').innerHTML = recent.length
-    ? recent.map(p=>`
-      <div class="order-item">
-        <div class="order-avatar">${(p.nama_pembeli||'?')[0].toUpperCase()}</div>
-        <div class="order-info">
-          <div class="order-name">${p.nama_pembeli||'-'}</div>
-          <div class="order-time">${p.tanggal||'-'}</div>
-        </div>
-        <div class="order-amount">${rpFormat(p.total)}</div>
-      </div>`).join('')
+    ? recent.map(p=>`<div class="order-item"><div class="order-avatar">${(p.nama_pembeli||'?')[0].toUpperCase()}</div><div class="order-info"><div class="order-name">${p.nama_pembeli||'-'}</div><div class="order-time">${p.tanggal||'-'}</div></div><div class="order-amount">${rpFormat(p.total)}</div></div>`).join('')
     : '<div style="padding:24px;text-align:center;color:#bbb;font-size:13px">Belum ada pesanan</div>';
-
   if (!recent.length) return;
-  document.getElementById('bodyBeranda').innerHTML = recent.map(p=>`<tr>
-    <td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td>
-    <td><b style="color:#111">${p.nama_pembeli||'-'}</b></td>
-    <td>${p.no_hp||'-'}</td>
-    <td style="color:#2D6A27;font-weight:600">${rpFormat(p.total)}</td>
-    <td style="font-size:12px;color:#aaa">${p.tanggal||'-'}</td>
-    <td>${badgeStatus(p.status)}</td>
-    <td>${tombolPesanan(p.id_pesanan,p.status)}</td>
-  </tr>`).join('');
+  document.getElementById('bodyBeranda').innerHTML = recent.map(p=>`<tr><td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td><td><b style="color:#111">${p.nama_pembeli||'-'}</b></td><td>${p.no_hp||'-'}</td><td style="color:#2D6A27;font-weight:600">${rpFormat(p.total)}</td><td style="font-size:12px;color:#aaa">${p.tanggal||'-'}</td><td>${badgeStatus(p.status)}</td><td>${tombolPesanan(p.id_pesanan,p.status)}</td></tr>`).join('');
   document.getElementById('tabelBeranda').style.display = 'table';
 }
 
 function renderPesanan() {
   document.getElementById('loadingPesanan').style.display = 'none';
   if (!pesananData.length) return;
-  document.getElementById('bodyPesanan').innerHTML = [...pesananData].reverse().map(p=>`<tr>
-    <td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td>
-    <td><b style="color:#111">${p.nama_pembeli||'-'}</b></td>
-    <td>${p.no_hp||'-'}</td>
-    <td style="font-size:12px;max-width:150px">${p.alamat||'-'}</td>
-    <td style="color:#2D6A27;font-weight:600">${rpFormat(p.total)}</td>
-    <td style="font-size:12px;color:#aaa">${p.tanggal||'-'}</td>
-    <td>${badgeStatus(p.status)}</td>
-    <td>${tombolPesanan(p.id_pesanan,p.status)}</td>
-  </tr>`).join('');
+  document.getElementById('bodyPesanan').innerHTML = [...pesananData].reverse().map(p=>`<tr><td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td><td><b style="color:#111">${p.nama_pembeli||'-'}</b></td><td>${p.no_hp||'-'}</td><td style="font-size:12px;max-width:150px">${p.alamat||'-'}</td><td style="color:#2D6A27;font-weight:600">${rpFormat(p.total)}</td><td style="font-size:12px;color:#aaa">${p.tanggal||'-'}</td><td>${badgeStatus(p.status)}</td><td>${tombolPesanan(p.id_pesanan,p.status)}</td></tr>`).join('');
   document.getElementById('tabelPesanan').style.display = 'table';
 }
 
 function renderPembayaran() {
   document.getElementById('loadingPembayaran').style.display = 'none';
   if (!pembayaranData.length) return;
-  document.getElementById('bodyPembayaran').innerHTML = [...pembayaranData].reverse().map(p=>`<tr>
-    <td style="font-size:11px;color:#aaa">${p.id_pembayaran||'-'}</td>
-    <td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td>
-    <td><b style="color:#111">${(p.metode||'-').toUpperCase()}</b></td>
-    <td style="color:#2D6A27;font-weight:600">${rpFormat(p.jumlah)}</td>
-    <td>${badgeStatus(p.status)}</td>
-    <td style="font-size:12px;color:#aaa">${p.tanggal||'-'}</td>
-  </tr>`).join('');
+  document.getElementById('bodyPembayaran').innerHTML = [...pembayaranData].reverse().map(p=>`<tr><td style="font-size:11px;color:#aaa">${p.id_pembayaran||'-'}</td><td style="font-size:11px;color:#aaa">${p.id_pesanan||'-'}</td><td><b style="color:#111">${(p.metode||'-').toUpperCase()}</b></td><td style="color:#2D6A27;font-weight:600">${rpFormat(p.jumlah)}</td><td>${badgeStatus(p.status)}</td><td style="font-size:12px;color:#aaa">${p.tanggal||'-'}</td></tr>`).join('');
   document.getElementById('tabelPembayaran').style.display = 'table';
 }
 
@@ -1092,45 +989,11 @@ function renderBerita() {
     document.getElementById('loadingBerita').style.display = 'block';
     return;
   }
-  document.getElementById('bodyBerita').innerHTML = [...beritaData].reverse().map(b=>`<tr>
-    <td style="font-size:11px;color:#aaa">${b.id_berita||'-'}</td>
-    <td><b style="color:#111">${b.judul||'-'}</b></td>
-    <td style="font-size:12px;color:#aaa;max-width:220px">${(b.isi||'-').substring(0,70)}...</td>
-    <td style="font-size:12px;color:#aaa">${b.tanggal||'-'}</td>
-    <td>${badgeStatus(b.status||'Menunggu')}</td>
-    <td><div class="btn-group">
-      <button class="btn-aksi btn-terima" onclick="tinjauBerita('${b.id_berita}','Diterima')">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Terima
-      </button>
-      <button class="btn-aksi btn-tolak" onclick="tinjauBerita('${b.id_berita}','Ditolak')">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Tolak
-      </button>
-    </div></td>
-  </tr>`).join('');
+  document.getElementById('bodyBerita').innerHTML = [...beritaData].reverse().map(b=>`<tr><td style="font-size:11px;color:#aaa">${b.id_berita||'-'}</td><td><b style="color:#111">${b.judul||'-'}</b></td><td style="font-size:12px;color:#aaa;max-width:220px">${(b.isi||'-').substring(0,70)}...</td><td style="font-size:12px;color:#aaa">${b.tanggal||'-'}</td><td>${badgeStatus(b.status||'Menunggu')}</td><td><div class="btn-group"><button class="btn-aksi btn-terima" onclick="tinjauBerita('${b.id_berita}','Diterima')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Terima</button><button class="btn-aksi btn-tolak" onclick="tinjauBerita('${b.id_berita}','Ditolak')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Tolak</button></div></td></tr>`).join('');
   document.getElementById('tabelBerita').style.display = 'table';
 }
 
-/* ===================== GRAFIK ===================== */
-function renderGrafik() {
-  switchChartBig('minggu', document.querySelector('#page-grafik .tab-btn'));
-  renderChartMetode();
-  const total = pesananData.length;
-  const selesai = pesananData.filter(p=>(p.status||'').toLowerCase()==='selesai').length;
-  const pendapatan = pesananData.filter(p=>(p.status||'').toLowerCase()==='selesai').reduce((s,p)=>s+(parseInt(p.total)||0),0);
-  document.getElementById('grafikStats').innerHTML = `
-    <div class="stat-card"><div class="stat-label">Total Pesanan</div><div class="stat-value">${total}</div></div>
-    <div class="stat-card"><div class="stat-label">Selesai</div><div class="stat-value" style="color:#2D6A27">${selesai}</div></div>
-    <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" style="color:#E67E22">${pesananData.filter(p=>(p.status||'').toLowerCase()==='pending').length}</div></div>
-    <div class="stat-card"><div class="stat-label">Total Pendapatan</div><div class="stat-value" style="color:#2D6A27;font-size:18px">${rpFormat(pendapatan)}</div></div>`;
-}
-
-function renderProfil() {
-  document.getElementById('profilTotal').textContent = pesananData.length;
-  document.getElementById('profilSelesai').textContent = pesananData.filter(p=>(p.status||'').toLowerCase()==='selesai').length + ' pesanan';
-  const pendapatan = pesananData.filter(p=>(p.status||'').toLowerCase()==='selesai').reduce((s,p)=>s+(parseInt(p.total)||0),0);
-  document.getElementById('profilPendapatan').textContent = rpFormat(pendapatan);
-}
-
+/* ===================== FUNGSI UNTUK MINI CHART (BERANDA) ===================== */
 function getChartData(mode) {
   const days = mode === 'minggu' ? ['Sen','Sel','Rab','Kam','Jum','Sab','Min'] : ['Jan','Feb','Mar','Apr','Mei','Jun','Jul'];
   const vals = days.map(()=>Math.floor(Math.random()*5)+1);
@@ -1140,28 +1003,7 @@ function getChartData(mode) {
 function renderChart(containerId, mode, maxH) {
   const { days, vals } = getChartData(mode);
   const max = Math.max(...vals);
-  document.getElementById(containerId).innerHTML = vals.map((v,i)=>`
-    <div class="bar-col">
-      <div class="bar" style="height:${(v/max)*maxH}px" data-val="Rp ${(v*50000).toLocaleString('id-ID')}"></div>
-      <span class="bar-label">${days[i]}</span>
-    </div>`).join('');
-}
-
-function renderChartMetode() {
-  const metode = {};
-  pembayaranData.forEach(p=>{ const m=(p.metode||'lain').toUpperCase(); metode[m]=(metode[m]||0)+1; });
-  const total = Object.values(metode).reduce((a,b)=>a+b,0)||1;
-  const colors = ['#2D6A27','#4CAF50','#81C784','#E67E22','#1976D2'];
-  document.getElementById('chartMetode').innerHTML = Object.entries(metode).map(([k,v],i)=>`
-    <div style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px">
-        <span style="font-weight:600;color:#111">${k}</span>
-        <span style="color:#aaa">${v} transaksi</span>
-      </div>
-      <div style="background:#f0f0f0;border-radius:100px;height:8px">
-        <div style="background:${colors[i%colors.length]};width:${(v/total)*100}%;height:8px;border-radius:100px;transition:width .6s ease"></div>
-      </div>
-    </div>`).join('') || '<div style="padding:24px;text-align:center;color:#bbb;font-size:13px">Belum ada data pembayaran</div>';
+  document.getElementById(containerId).innerHTML = vals.map((v,i)=>`<div class="bar-col"><div class="bar" style="height:${(v/max)*maxH}px" data-val="Rp ${(v*50000).toLocaleString('id-ID')}"></div><span class="bar-label">${days[i]}</span></div>`).join('');
 }
 
 function switchChart(mode, el) {
@@ -1170,12 +1012,15 @@ function switchChart(mode, el) {
   renderChart('chartMini', mode, 140);
 }
 
-function switchChartBig(mode, el) {
-  if(el) { el.closest('.tab-group').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
-  renderChart('chartBig', mode, 180);
-}
-
 function renderChartMini(mode) { renderChart('chartMini', mode, 140); }
+
+/* ===================== PROFIL ===================== */
+function renderProfil() {
+  document.getElementById('profilTotal').textContent = pesananData.length;
+  document.getElementById('profilSelesai').textContent = pesananData.filter(p=>(p.status||'').toLowerCase()==='selesai').length + ' pesanan';
+  const pendapatan = pesananData.filter(p=>(p.status||'').toLowerCase()==='selesai').reduce((s,p)=>s+(parseInt(p.total)||0),0);
+  document.getElementById('profilPendapatan').textContent = rpFormat(pendapatan);
+}
 
 /* ===================== MODAL ===================== */
 function konfirmasi(id, status, title, body, type) {
