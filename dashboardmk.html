@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pesanan — GayoMart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8faf8; color: #111; line-height: 1.5; }
+        
+        /* NAVBAR */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 56px; height: 62px; background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px); border-bottom: 1px solid #eee;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .nav-brand { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 7px; text-decoration: none; color: #111; }
+        .nav-dot { width: 7px; height: 7px; background: #2D6A27; border-radius: 50%; }
+        .nav-links { display: flex; gap: 28px; list-style: none; }
+        .nav-links a { text-decoration: none; color: #666; font-size: 13px; transition: 0.2s; }
+        .nav-links a:hover { color: #111; }
+        .user-profile { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e8f5e9; display: flex; align-items: center; justify-content: center; color: #2D6A27; border: 1px solid #c8e6c9; }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 24px; min-height: 70vh; }
+
+        /* DASHBOARD HEADER */
+        .db-header { margin-bottom: 32px; }
+        .db-title { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .db-subtitle { color: #888; font-size: 14px; }
+
+        /* EMPTY STATE */
+        #emptyState { text-align: center; padding: 80px 20px; display: none; }
+        .empty-illustration { width: 180px; opacity: 0.5; margin-bottom: 24px; }
+        .empty-text { font-size: 18px; font-weight: 600; color: #444; margin-bottom: 8px; }
+        .empty-sub { font-size: 14px; color: #999; margin-bottom: 24px; }
+        .btn-primary { background: #2D6A27; color: #fff; border: none; padding: 12px 28px; border-radius: 100px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
+        .btn-primary:hover { background: #1e4d1a; transform: translateY(-2px); }
+
+        /* CONTENT STATE (HIDDEN BY DEFAULT) */
+        #contentState { display: none; }
+        .db-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+
+        /* CARDS */
+        .card { background: #fff; border-radius: 24px; border: 1px solid #f0f0f0; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 24px; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 1px solid #f8f8f8; padding-bottom: 20px; }
+        .order-id { font-size: 12px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+        .order-status { background: #e8f5e9; color: #2D6A27; padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; }
+        
+        /* TIMELINE */
+        .timeline { position: relative; padding-left: 40px; }
+        .timeline::before { content: ''; position: absolute; left: 7px; top: 5px; bottom: 5px; width: 2px; background: #f0f0f0; }
+        .step { position: relative; margin-bottom: 32px; }
+        .step-dot { position: absolute; left: -40px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid #eee; z-index: 2; }
+        .step.active .step-dot { border-color: #2D6A27; background: #2D6A27; box-shadow: 0 0 0 5px rgba(45,106,39,0.1); }
+        .step.completed .step-dot { border-color: #2D6A27; background: #fff; }
+        .step-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #111; }
+        .step.active h4 { color: #2D6A27; }
+        .step-info p { font-size: 12px; color: #888; }
+        .step-time { font-size: 11px; color: #bbb; margin-top: 4px; }
+
+        /* SIDEBAR */
+        .shipping-card { background: #fff; border-radius: 20px; border: 1px solid #f0f0f0; padding: 24px; }
+        .shipping-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .shipping-item { margin-bottom: 16px; }
+        .label { font-size: 11px; color: #aaa; margin-bottom: 4px; display: block; }
+        .value { font-size: 13px; font-weight: 500; color: #333; }
+
+        .product-item { display: flex; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid #f8f8f8; }
+        .product-img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
+        
+        /* DEMO TOOLS */
+        .demo-tools { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; }
+        .btn-demo { background: #111; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 11px; cursor: pointer; opacity: 0.5; transition: 0.3s; }
+        .btn-demo:hover { opacity: 1; }
+
+        @media (max-width: 850px) {
+            .db-grid { grid-template-columns: 1fr; }
+            .navbar { padding: 0 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand"><span class="nav-dot"></span> Desa Gayo</a>
+        <ul class="nav-links">
+            <li><a href="marketplace.html">Marketplace</a></li>
+            <li><a href="berita.html">Berita</a></li>
+        </ul>
+        <div class="user-profile">
+            <div class="avatar">U</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header class="db-header">
+            <h1 class="db-title">Lacak <em>Pesanan</em></h1>
+            <p class="db-subtitle">Pantau perjalanan paket kamu dari Desa Gayo.</p>
+        </header>
+
+        <!-- STATE 1: BELUM ADA PESANAN -->
+        <div id="emptyState">
+            <svg class="empty-illustration" viewBox="0 0 24 24" fill="none" stroke="#2D6A27" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <div class="empty-text">Belum Ada Pesanan Aktif</div>
+            <p class="empty-sub">Kamu belum melakukan pemesanan apapun di GayoMart.</p>
+            <a href="marketplace.html" class="btn-primary">Mulai Belanja</a>
+        </div>
+
+        <!-- STATE 2: ADA PESANAN -->
+        <div id="contentState">
+            <div class="db-grid">
+                <div class="main-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="order-id" id="orderID">ID ORDER: #GAYO-XXXXXX</div>
+                                <div class="value" id="orderDate">Dipesan pada --</div>
+                            </div>
+                            <div class="order-status">Sedang Dikirim</div>
+                        </div>
+
+                        <div class="timeline">
+                            <div class="step active">
+                                <div class="step-dot"></div>
+                                <div class="step-info">
+                                    <h4>Paket Sedang Dibawa Kurir</h4>
+                                    <p>Kurir J&T sedang menuju lokasi alamat pengiriman.</p>
+                                    <div class="step-time">Baru saja</div>
+                                </div>
+                            </div>
+                            <div class="step completed">
+                                <div class="step-dot"></div>
+                                <div class="step-info">
+                                    <h4>Pesanan Telah Dikirim</h4>
+                                    <p>Paket telah diserahkan ke pihak ekspedisi J&T Express.</p>
+                                    <div class="step-time">1 jam yang lalu</div>
+                                </div>
+                            </div>
+                            <div class="step completed">
+                                <div class="step-dot"></div>
+                                <div class="step-info">
+                                    <h4>Pesanan Dikonfirmasi</h4>
+                                    <p>Pembayaran berhasil dan pesanan sedang disiapkan.</p>
+                                    <div class="step-time">2 jam yang lalu</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="font-size: 15px; margin-bottom: 16px;">Produk yang Dibeli</h3>
+                        <div id="productList">
+                            <!-- Produk akan muncul di sini via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="shipping-card">
+                        <h3 class="shipping-title">Pengiriman</h3>
+                        <div class="shipping-item">
+                            <span class="label">Ekspedisi</span>
+                            <div class="value">J&T Express (Reguler)</div>
+                        </div>
+                        <div class="shipping-item">
+                            <span class="label">Nomor Resi</span>
+                            <div class="value">JT882910223 <span style="color:#2D6A27; cursor:pointer; font-size:10px; margin-left:5px;">SALIN</span></div>
+                        </div>
+                        <div class="shipping-item">
+                            <span class="label">Alamat</span>
+                            <div class="value">Jl. Merdeka No. 45, Jakarta Selatan</div>
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="width:100%; margin-top:16px; font-size:12px;" onclick="window.print()">Cetak Invoice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEMO TOOLS (Hanya untuk testing) -->
+    <div class="demo-tools">
+        <button class="btn-demo" onclick="simulateOrder()">Simulasi Ada Order</button>
+        <button class="btn-demo" onclick="clearOrder()">Reset Kosong</button>
+    </div>
+
+    <script>
+        // FUNGSI CEK STATUS ORDER
+        function checkOrderStatus() {
+            const hasOrder = localStorage.getItem('gayo_order_active');
+            const emptyState = document.getElementById('emptyState');
+            const contentState = document.getElementById('contentState');
+
+            if (hasOrder === 'true') {
+                emptyState.style.display = 'none';
+                contentState.style.display = 'block';
+                loadOrderData();
+            } else {
+                emptyState.style.display = 'block';
+                contentState.style.display = 'none';
+            }
+        }
+
+        function loadOrderData() {
+            // Simulasi data dari storage
+            document.getElementById('orderID').textContent = 'ID ORDER: #GAYO-' + Math.floor(100000 + Math.random() * 900000);
+            const now = new Date();
+            document.getElementById('orderDate').textContent = 'Dipesan pada ' + now.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+            
+            const productList = document.getElementById('productList');
+            productList.innerHTML = `
+                <div class="product-item">
+                    <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=100" class="product-img">
+                    <div class="product-info">
+                        <h5>Kopi Gayo Arabika Premium</h5>
+                        <p>1 Unit | Rp 125.000</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // FUNGSI UNTUK SIMULASI (Bisa dipanggil dari halaman Marketplace saat klik beli)
+        function simulateOrder() {
+            localStorage.setItem('gayo_order_active', 'true');
+            checkOrderStatus();
+            alert('Simulasi: Pesanan berhasil dibuat!');
+        }
+
+        function clearOrder() {
+            localStorage.removeItem('gayo_order_active');
+            checkOrderStatus();
+        }
+
+        // Jalankan cek saat halaman dimuat
+        window.onload = checkOrderStatus;
+    </script>
+</body>
+</html>
