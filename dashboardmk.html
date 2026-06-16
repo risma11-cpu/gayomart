@@ -1,241 +1,550 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Pesanan — GayoMart</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8faf8; color: #111; line-height: 1.5; }
-        
-        /* NAVBAR */
-        .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 56px; height: 62px; background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(10px); border-bottom: 1px solid #eee;
-            position: sticky; top: 0; z-index: 100;
-        }
-        .nav-brand { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 7px; text-decoration: none; color: #111; }
-        .nav-dot { width: 7px; height: 7px; background: #2D6A27; border-radius: 50%; }
-        .nav-links { display: flex; gap: 28px; list-style: none; }
-        .nav-links a { text-decoration: none; color: #666; font-size: 13px; transition: 0.2s; }
-        .nav-links a:hover { color: #111; }
-        .user-profile { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; }
-        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e8f5e9; display: flex; align-items: center; justify-content: center; color: #2D6A27; border: 1px solid #c8e6c9; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Pesanan — GayoMart</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f8faf8;color:#111;line-height:1.5;min-height:100vh;display:flex;flex-direction:column;}
 
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 24px; min-height: 70vh; }
+/* NAVBAR */
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:0 56px;height:62px;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);border-bottom:1px solid #eee;position:sticky;top:0;z-index:100;}
+.nav-brand{font-size:16px;font-weight:600;display:flex;align-items:center;gap:7px;text-decoration:none;color:#111;}
+.nav-dot{width:7px;height:7px;background:#2D6A27;border-radius:50%;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{text-decoration:none;color:#666;font-size:13px;transition:.2s;}
+.nav-links a:hover{color:#111;}
 
-        /* DASHBOARD HEADER */
-        .db-header { margin-bottom: 32px; }
-        .db-title { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; margin-bottom: 8px; }
-        .db-subtitle { color: #888; font-size: 14px; }
+/* HERO */
+.track-hero{background:#f0f7f0;padding:48px 56px 40px;position:relative;overflow:hidden;text-align:center;}
+.track-hero::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(74,161,68,0.15) 0%,transparent 70%);top:-200px;left:-100px;filter:blur(60px);pointer-events:none;}
+.track-hero::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(45,106,39,0.12) 0%,transparent 70%);bottom:-150px;right:-80px;filter:blur(65px);pointer-events:none;}
+.track-hero-inner{position:relative;z-index:2;max-width:560px;margin:0 auto;}
+.track-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(45,106,39,0.08);border:1px solid rgba(45,106,39,0.18);border-radius:100px;padding:6px 16px 6px 10px;font-size:11px;color:#2D6A27;font-weight:500;margin-bottom:20px;}
+.track-tag-dot{width:5px;height:5px;border-radius:50%;background:#2D6A27;animation:pulseDot 2s ease-in-out infinite;}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.6);}}
+.track-hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,42px);font-weight:700;line-height:1.15;letter-spacing:-.4px;margin-bottom:10px;color:#1a1a1a;}
+.track-hero h1 em{font-style:italic;color:#2D6A27;}
+.track-hero p{font-size:13.5px;color:rgba(0,0,0,.45);line-height:1.8;font-weight:300;}
 
-        /* EMPTY STATE */
-        #emptyState { text-align: center; padding: 80px 20px; display: none; }
-        .empty-illustration { width: 180px; opacity: 0.5; margin-bottom: 24px; }
-        .empty-text { font-size: 18px; font-weight: 600; color: #444; margin-bottom: 8px; }
-        .empty-sub { font-size: 14px; color: #999; margin-bottom: 24px; }
-        .btn-primary { background: #2D6A27; color: #fff; border: none; padding: 12px 28px; border-radius: 100px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
-        .btn-primary:hover { background: #1e4d1a; transform: translateY(-2px); }
+/* CONTAINER */
+.container{flex:1;max-width:860px;margin:0 auto;width:100%;padding:36px 24px 72px;}
 
-        /* CONTENT STATE (HIDDEN BY DEFAULT) */
-        #contentState { display: none; }
-        .db-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+/* SEARCH CARD */
+.search-card{background:#fff;border:1px solid #ebebeb;border-radius:20px;padding:28px;margin-bottom:28px;}
+.search-card-title{font-size:13px;font-weight:600;color:#111;margin-bottom:14px;}
+.search-row{display:flex;gap:10px;}
+.search-input{flex:1;padding:11px 16px;border:1px solid #e0e0e0;border-radius:12px;font-size:13.5px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;color:#111;}
+.search-input:focus{border-color:#2D6A27;}
+.search-btn{padding:11px 22px;border-radius:12px;border:none;background:#111;color:#fff;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:background .25s;white-space:nowrap;}
+.search-btn:hover{background:#2D6A27;}
+.search-btn:disabled{background:#ccc;cursor:not-allowed;}
 
-        /* CARDS */
-        .card { background: #fff; border-radius: 24px; border: 1px solid #f0f0f0; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 24px; }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 1px solid #f8f8f8; padding-bottom: 20px; }
-        .order-id { font-size: 12px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-        .order-status { background: #e8f5e9; color: #2D6A27; padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; }
-        
-        /* TIMELINE */
-        .timeline { position: relative; padding-left: 40px; }
-        .timeline::before { content: ''; position: absolute; left: 7px; top: 5px; bottom: 5px; width: 2px; background: #f0f0f0; }
-        .step { position: relative; margin-bottom: 32px; }
-        .step-dot { position: absolute; left: -40px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid #eee; z-index: 2; }
-        .step.active .step-dot { border-color: #2D6A27; background: #2D6A27; box-shadow: 0 0 0 5px rgba(45,106,39,0.1); }
-        .step.completed .step-dot { border-color: #2D6A27; background: #fff; }
-        .step-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #111; }
-        .step.active h4 { color: #2D6A27; }
-        .step-info p { font-size: 12px; color: #888; }
-        .step-time { font-size: 11px; color: #bbb; margin-top: 4px; }
+/* LOADING */
+.loading-card{background:#fff;border:1px solid #ebebeb;border-radius:20px;padding:48px;text-align:center;display:none;}
+.loading-card.show{display:block;}
+.spinner{width:36px;height:36px;border:3px solid #f0f0f0;border-top-color:#2D6A27;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:13px;color:#aaa;}
 
-        /* SIDEBAR */
-        .shipping-card { background: #fff; border-radius: 20px; border: 1px solid #f0f0f0; padding: 24px; }
-        .shipping-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        .shipping-item { margin-bottom: 16px; }
-        .label { font-size: 11px; color: #aaa; margin-bottom: 4px; display: block; }
-        .value { font-size: 13px; font-weight: 500; color: #333; }
+/* ERROR */
+.error-card{background:#fff;border:1px solid #ebebeb;border-radius:20px;padding:56px 28px;text-align:center;display:none;}
+.error-card.show{display:block;animation:fadeUp .4s ease forwards;}
+.error-icon{font-size:40px;margin-bottom:16px;}
+.error-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#111;margin-bottom:8px;}
+.error-sub{font-size:13px;color:#aaa;line-height:1.7;}
 
-        .product-item { display: flex; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid #f8f8f8; }
-        .product-img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
-        
-        /* DEMO TOOLS */
-        .demo-tools { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; }
-        .btn-demo { background: #111; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 11px; cursor: pointer; opacity: 0.5; transition: 0.3s; }
-        .btn-demo:hover { opacity: 1; }
+/* RESULT */
+.result-wrap{display:none;}
+.result-wrap.show{display:block;animation:fadeUp .4s ease forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
-        @media (max-width: 850px) {
-            .db-grid { grid-template-columns: 1fr; }
-            .navbar { padding: 0 24px; }
-        }
-    </style>
+.db-grid{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;}
+
+/* CARD */
+.card{background:#fff;border-radius:24px;border:1px solid #f0f0f0;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.02);margin-bottom:20px;}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #f8f8f8;flex-wrap:wrap;gap:12px;}
+.order-id-label{font-size:11px;color:#aaa;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;}
+.order-id-val{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#111;}
+.order-date{font-size:12px;color:#aaa;margin-top:3px;}
+
+/* STATUS BADGE */
+.status-badge{padding:7px 16px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:.3px;white-space:nowrap;}
+.status-diterima{background:#fef9e7;color:#D4A017;border:1px solid #f0d080;}
+.status-diproses{background:#e8f4fd;color:#1a6fa8;border:1px solid #a8d4f0;}
+.status-dikirim{background:#fff0e6;color:#E67E22;border:1px solid #f0c090;}
+.status-selesai{background:#f4faf3;color:#2D6A27;border:1px solid #c4ddc0;}
+
+/* TIMELINE */
+.timeline-section-title{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:20px;}
+.timeline{position:relative;padding-left:40px;}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:#f0f0f0;}
+.step{position:relative;margin-bottom:28px;}
+.step:last-child{margin-bottom:0;}
+.step-dot{position:absolute;left:-40px;top:4px;width:16px;height:16px;border-radius:50%;background:#fff;border:2.5px solid #eee;z-index:2;transition:all .3s;}
+.step.done .step-dot{border-color:#2D6A27;background:#2D6A27;}
+.step.active .step-dot{border-color:#2D6A27;background:#fff;box-shadow:0 0 0 5px rgba(45,106,39,.12);}
+.step-title{font-size:13.5px;font-weight:600;margin-bottom:3px;color:#bbb;}
+.step.done .step-title,.step.active .step-title{color:#111;}
+.step.active .step-title{color:#2D6A27;}
+.step-desc{font-size:12px;color:#ccc;line-height:1.6;}
+.step.done .step-desc,.step.active .step-desc{color:#888;}
+.step-tag{display:inline-block;margin-top:5px;font-size:10.5px;color:#2D6A27;font-weight:600;}
+
+/* PRODUK */
+.product-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f8f8f8;gap:12px;}
+.product-item:last-child{border-bottom:none;}
+.product-left{display:flex;align-items:center;gap:12px;}
+.product-icon{width:40px;height:40px;border-radius:10px;background:#f0f7f0;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.product-name{font-size:13px;font-weight:500;color:#111;margin-bottom:2px;}
+.product-qty{font-size:11.5px;color:#aaa;}
+.product-subtotal{font-size:13px;font-weight:600;color:#111;white-space:nowrap;}
+
+/* SIDEBAR */
+.sidebar-card{background:#fff;border-radius:20px;border:1px solid #f0f0f0;padding:24px;margin-bottom:16px;}
+.sidebar-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#aaa;margin-bottom:16px;}
+.info-item{margin-bottom:14px;}
+.info-item:last-child{margin-bottom:0;}
+.info-label{font-size:11px;color:#aaa;margin-bottom:3px;}
+.info-val{font-size:13px;font-weight:500;color:#333;line-height:1.5;}
+
+.order-total-row{display:flex;justify-content:space-between;font-size:13px;color:#666;margin-bottom:8px;}
+.order-total-final{display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:#111;padding-top:12px;border-top:1px solid #f0f0f0;margin-top:8px;}
+
+.btn-pdf{width:100%;padding:13px;border-radius:12px;border:none;background:#2D6A27;color:#fff;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background .25s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-pdf:hover{background:#1e4d1a;}
+.btn-pdf:disabled{background:#ccc;cursor:not-allowed;}
+
+.btn-back{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1px solid #e0e0e0;background:#fff;color:#666;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;}
+.btn-back:hover{border-color:#111;color:#111;}
+
+/* FOOTER */
+.footer{background:#0d0d0d;padding:28px 56px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.footer-brand{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px;}
+.footer-brand-dot{width:6px;height:6px;border-radius:50%;background:#2D6A27;}
+.footer-copy{font-size:11.5px;color:rgba(255,255,255,.25);}
+.footer-back{font-size:12.5px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;}
+.footer-back:hover{color:#7DD87A;}
+
+@media(max-width:768px){
+  .navbar{padding:0 20px;}
+  .track-hero{padding:36px 20px 32px;}
+  .container{padding:24px 16px 60px;}
+  .db-grid{grid-template-columns:1fr;}
+  .search-row{flex-direction:column;}
+  .footer{padding:24px 20px;}
+}
+</style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <a href="index.html" class="nav-brand"><span class="nav-dot"></span> Desa Gayo</a>
-        <ul class="nav-links">
-            <li><a href="marketplace.html">Marketplace</a></li>
-            <li><a href="berita.html">Berita</a></li>
-        </ul>
-        <div class="user-profile">
-            <div class="avatar">U</div>
-        </div>
-    </nav>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="nav-brand"><span class="nav-dot"></span>Desa Gayo</a>
+  <ul class="nav-links">
+    <li><a href="marketplace.html">Marketplace</a></li>
+    <li><a href="berita.html">Berita</a></li>
+  </ul>
+</nav>
 
-    <div class="container">
-        
-        <header class="db-header">
-            <h1 class="db-title">Lacak <em>Pesanan</em></h1>
-            <p class="db-subtitle">Pantau perjalanan paket kamu dari Desa Gayo.</p>
-        </header>
+<!-- HERO -->
+<div class="track-hero">
+  <div class="track-hero-inner">
+    <div class="track-tag"><span class="track-tag-dot"></span>Dashboard Pesanan</div>
+    <h1>Pantau <em>Pesananmu</em></h1>
+    <p>Masukkan ID pesanan dari email konfirmasi untuk melihat status terkini dan download struk.</p>
+  </div>
+</div>
 
-        <!-- STATE 1: BELUM ADA PESANAN -->
-        <div id="emptyState">
-            <svg class="empty-illustration" viewBox="0 0 24 24" fill="none" stroke="#2D6A27" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            <div class="empty-text">Belum Ada Pesanan Aktif</div>
-            <p class="empty-sub">Kamu belum melakukan pemesanan apapun di GayoMart.</p>
-            <a href="marketplace.html" class="btn-primary">Mulai Belanja</a>
-        </div>
+<!-- CONTAINER -->
+<div class="container">
 
-        <!-- STATE 2: ADA PESANAN -->
-        <div id="contentState">
-            <div class="db-grid">
-                <div class="main-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="order-id" id="orderID">ID ORDER: #GAYO-XXXXXX</div>
-                                <div class="value" id="orderDate">Dipesan pada --</div>
-                            </div>
-                            <div class="order-status">Sedang Dikirim</div>
-                        </div>
+  <!-- SEARCH -->
+  <div class="search-card">
+    <div class="search-card-title">ID Pesanan</div>
+    <div class="search-row">
+      <input type="text" class="search-input" id="inputId" placeholder="Contoh: GM-1718500000000" />
+      <button class="search-btn" id="searchBtn" onclick="cariPesanan()">Cek Pesanan →</button>
+    </div>
+  </div>
 
-                        <div class="timeline">
-                            <div class="step active">
-                                <div class="step-dot"></div>
-                                <div class="step-info">
-                                    <h4>Paket Sedang Dibawa Kurir</h4>
-                                    <p>Kurir J&T sedang menuju lokasi alamat pengiriman.</p>
-                                    <div class="step-time">Baru saja</div>
-                                </div>
-                            </div>
-                            <div class="step completed">
-                                <div class="step-dot"></div>
-                                <div class="step-info">
-                                    <h4>Pesanan Telah Dikirim</h4>
-                                    <p>Paket telah diserahkan ke pihak ekspedisi J&T Express.</p>
-                                    <div class="step-time">1 jam yang lalu</div>
-                                </div>
-                            </div>
-                            <div class="step completed">
-                                <div class="step-dot"></div>
-                                <div class="step-info">
-                                    <h4>Pesanan Dikonfirmasi</h4>
-                                    <p>Pembayaran berhasil dan pesanan sedang disiapkan.</p>
-                                    <div class="step-time">2 jam yang lalu</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  <!-- LOADING -->
+  <div class="loading-card" id="loadingCard">
+    <div class="spinner"></div>
+    <div class="loading-text">Mengambil data pesanan...</div>
+  </div>
 
-                    <div class="card">
-                        <h3 style="font-size: 15px; margin-bottom: 16px;">Produk yang Dibeli</h3>
-                        <div id="productList">
-                            <!-- Produk akan muncul di sini via JS -->
-                        </div>
-                    </div>
-                </div>
+  <!-- ERROR -->
+  <div class="error-card" id="errorCard">
+    <div class="error-icon">🔍</div>
+    <h2 class="error-title">Pesanan Tidak Ditemukan</h2>
+    <p class="error-sub">Pastikan ID pesanan sesuai dengan yang ada di email konfirmasi kamu.<br>Contoh format: <strong>GM-1718500000000</strong></p>
+  </div>
 
-                <div class="sidebar">
-                    <div class="shipping-card">
-                        <h3 class="shipping-title">Pengiriman</h3>
-                        <div class="shipping-item">
-                            <span class="label">Ekspedisi</span>
-                            <div class="value">J&T Express (Reguler)</div>
-                        </div>
-                        <div class="shipping-item">
-                            <span class="label">Nomor Resi</span>
-                            <div class="value">JT882910223 <span style="color:#2D6A27; cursor:pointer; font-size:10px; margin-left:5px;">SALIN</span></div>
-                        </div>
-                        <div class="shipping-item">
-                            <span class="label">Alamat</span>
-                            <div class="value">Jl. Merdeka No. 45, Jakarta Selatan</div>
-                        </div>
-                    </div>
-                    <button class="btn-primary" style="width:100%; margin-top:16px; font-size:12px;" onclick="window.print()">Cetak Invoice</button>
-                </div>
+  <!-- RESULT -->
+  <div class="result-wrap" id="resultWrap">
+    <div class="db-grid">
+
+      <!-- MAIN -->
+      <div class="main-col">
+
+        <!-- ORDER HEADER -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="order-id-label">ID Pesanan</div>
+              <div class="order-id-val" id="resId">-</div>
+              <div class="order-date" id="resTanggal">-</div>
             </div>
+            <div class="status-badge" id="resBadge">-</div>
+          </div>
+
+          <!-- TIMELINE -->
+          <div class="timeline-section-title">Status Pengiriman</div>
+          <div class="timeline" id="timeline"></div>
         </div>
+
+        <!-- PRODUK -->
+        <div class="card">
+          <div style="font-size:13px;font-weight:600;margin-bottom:16px;">Produk yang Dipesan</div>
+          <div id="produkList"></div>
+        </div>
+
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar-col">
+
+        <div class="sidebar-card">
+          <div class="sidebar-title">Info Pemesan</div>
+          <div class="info-item">
+            <div class="info-label">Nama</div>
+            <div class="info-val" id="resNama">-</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Alamat Pengiriman</div>
+            <div class="info-val" id="resAlamat">-</div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-title">Ringkasan Pembayaran</div>
+          <div id="summaryProduk"></div>
+          <div class="order-total-row"><span>Ongkir</span><span>Rp 25.000</span></div>
+          <div class="order-total-final"><span>Total Bayar</span><span id="resTotal">-</span></div>
+        </div>
+
+        <button class="btn-pdf" id="btnPdf" onclick="downloadStruk()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Struk PDF
+        </button>
+        <button class="btn-back" onclick="window.location.href='marketplace.html'">← Lanjut Belanja</button>
+
+      </div>
     </div>
+  </div>
 
-    <!-- DEMO TOOLS (Hanya untuk testing) -->
-    <div class="demo-tools">
-        <button class="btn-demo" onclick="simulateOrder()">Simulasi Ada Order</button>
-        <button class="btn-demo" onclick="clearOrder()">Reset Kosong</button>
-    </div>
+</div>
 
-    <script>
-        // FUNGSI CEK STATUS ORDER
-        function checkOrderStatus() {
-            const hasOrder = localStorage.getItem('gayo_order_active');
-            const emptyState = document.getElementById('emptyState');
-            const contentState = document.getElementById('contentState');
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand"><span class="footer-brand-dot"></span>GayoMart</div>
+  <div class="footer-copy">© 2026 Pemerintah Kabupaten Aceh Tengah</div>
+  <a href="index.html" class="footer-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12 7H2M7 12l-5-5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Kembali ke Beranda
+  </a>
+</footer>
 
-            if (hasOrder === 'true') {
-                emptyState.style.display = 'none';
-                contentState.style.display = 'block';
-                loadOrderData();
-            } else {
-                emptyState.style.display = 'block';
-                contentState.style.display = 'none';
-            }
-        }
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx79L5DfLVQAzvR9lxxJ5yfgRyrZRvyxUmjDlyUNhdtGsr9UiYwuCwUG2_vMHwGM5WO/exec';
 
-        function loadOrderData() {
-            // Simulasi data dari storage
-            document.getElementById('orderID').textContent = 'ID ORDER: #GAYO-' + Math.floor(100000 + Math.random() * 900000);
-            const now = new Date();
-            document.getElementById('orderDate').textContent = 'Dipesan pada ' + now.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
-            
-            const productList = document.getElementById('productList');
-            productList.innerHTML = `
-                <div class="product-item">
-                    <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=100" class="product-img">
-                    <div class="product-info">
-                        <h5>Kopi Gayo Arabika Premium</h5>
-                        <p>1 Unit | Rp 125.000</p>
-                    </div>
-                </div>
-            `;
-        }
+// Data global untuk PDF
+let orderData = null;
 
-        // FUNGSI UNTUK SIMULASI (Bisa dipanggil dari halaman Marketplace saat klik beli)
-        function simulateOrder() {
-            localStorage.setItem('gayo_order_active', 'true');
-            checkOrderStatus();
-            alert('Simulasi: Pesanan berhasil dibuat!');
-        }
+const STEPS = [
+  { key:'Pesanan Diterima', icon:'📋', title:'Pesanan Diterima',   desc:'Pesananmu sudah masuk ke sistem GayoMart.' },
+  { key:'Diproses',         icon:'⚙️',  title:'Sedang Diproses',   desc:'Penjual sedang menyiapkan barangmu.' },
+  { key:'Dikirim',          icon:'🚚', title:'Dalam Pengiriman',  desc:'Paketmu sedang dalam perjalanan ke alamatmu.' },
+  { key:'Selesai',          icon:'✅', title:'Pesanan Selesai',   desc:'Barang sudah sampai. Terima kasih sudah belanja di GayoMart!' },
+];
+const STATUS_ORDER = ['Pesanan Diterima','Diproses','Dikirim','Selesai'];
 
-        function clearOrder() {
-            localStorage.removeItem('gayo_order_active');
-            checkOrderStatus();
-        }
+function rp(n){ return 'Rp ' + parseInt(n||0).toLocaleString('id-ID'); }
 
-        // Jalankan cek saat halaman dimuat
-        window.onload = checkOrderStatus;
-    </script>
+function getStatusClass(s){
+  if(s==='Pesanan Diterima'||s==='Pending') return 'status-diterima';
+  if(s==='Diproses')  return 'status-diproses';
+  if(s==='Dikirim')   return 'status-dikirim';
+  if(s==='Selesai')   return 'status-selesai';
+  return 'status-diterima';
+}
+
+function buildTimeline(currentStatus){
+  const idx = STATUS_ORDER.indexOf(currentStatus);
+  const cur  = idx === -1 ? 0 : idx;
+  return STEPS.map((step, i) => {
+    const isDone   = i < cur;
+    const isActive = i === cur;
+    const cls = isDone ? 'done' : isActive ? 'active' : '';
+    return `
+      <div class="step ${cls}">
+        <div class="step-dot"></div>
+        <div class="step-title">${step.title}</div>
+        <div class="step-desc">${isActive||isDone ? step.desc : 'Menunggu proses sebelumnya'}</div>
+        ${isActive ? '<div class="step-tag">● Status saat ini</div>' : ''}
+      </div>`;
+  }).join('');
+}
+
+function parseProduk(produkStr){
+  if(!produkStr) return [];
+  return produkStr.split(';;').map(p => {
+    const parts = p.split('|');
+    return { id:parts[0]||'', nama:parts[1]||'-', qty:parts[2]||'1', subtotal:parts[3]||'0' };
+  });
+}
+
+function buildProdukList(items){
+  const icons = ['☕','🌿','🍯','🌾','🎁','🧴'];
+  return items.map((item, i) => `
+    <div class="product-item">
+      <div class="product-left">
+        <div class="product-icon">${icons[i % icons.length]}</div>
+        <div>
+          <div class="product-name">${item.nama}</div>
+          <div class="product-qty">×${item.qty}</div>
+        </div>
+      </div>
+      <div class="product-subtotal">${rp(item.subtotal)}</div>
+    </div>`).join('');
+}
+
+function buildSummaryProduk(items){
+  return items.map(item =>
+    `<div class="order-total-row"><span>${item.nama.substring(0,28)} ×${item.qty}</span><span>${rp(item.subtotal)}</span></div>`
+  ).join('');
+}
+
+function showCard(which){
+  document.getElementById('loadingCard').classList.remove('show');
+  document.getElementById('errorCard').classList.remove('show');
+  document.getElementById('resultWrap').classList.remove('show');
+  if(which) document.getElementById(which).classList.add('show');
+}
+
+async function cariPesanan(){
+  const id = document.getElementById('inputId').value.trim();
+  if(!id){ document.getElementById('inputId').focus(); return; }
+
+  const btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+  btn.textContent = 'Mencari...';
+  showCard('loadingCard');
+
+  try {
+    const res  = await fetch(`${SHEET_URL}?action=getStatus&id_pesanan=${encodeURIComponent(id)}`);
+    const json = await res.json();
+
+    if(json.status !== 'ok'){
+      showCard('errorCard');
+    } else {
+      orderData = json;
+      const produkItems = parseProduk(json.produk);
+      const statusNorm  = json.status_pesanan || 'Pesanan Diterima';
+
+      document.getElementById('resId').textContent      = json.id_pesanan;
+      document.getElementById('resTanggal').textContent = 'Dipesan pada ' + (json.tanggal || '-');
+      document.getElementById('resNama').textContent    = json.nama || '-';
+      document.getElementById('resAlamat').textContent  = json.alamat || '-';
+      document.getElementById('resTotal').textContent   = rp(json.total);
+
+      const badge = document.getElementById('resBadge');
+      badge.textContent = statusNorm;
+      badge.className   = 'status-badge ' + getStatusClass(statusNorm);
+
+      document.getElementById('timeline').innerHTML     = buildTimeline(statusNorm);
+      document.getElementById('produkList').innerHTML   = buildProdukList(produkItems);
+      document.getElementById('summaryProduk').innerHTML = buildSummaryProduk(produkItems);
+
+      showCard('resultWrap');
+    }
+  } catch(err) {
+    showCard('errorCard');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Cek Pesanan →';
+}
+
+/* ══ DOWNLOAD STRUK PDF ══ */
+function downloadStruk(){
+  if(!orderData) return;
+  const btn = document.getElementById('btnPdf');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Membuat PDF...';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'mm', format:'a5', orientation:'portrait' });
+    const W = doc.internal.pageSize.getWidth();
+    let y = 0;
+
+    // Header hijau
+    doc.setFillColor(45, 106, 39);
+    doc.rect(0, 0, W, 38, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text('GayoMart', W/2, 14, { align:'center' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text('Marketplace Produk Desa Gayo', W/2, 21, { align:'center' });
+    doc.text('Pemerintah Kabupaten Aceh Tengah', W/2, 27, { align:'center' });
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('STRUK PESANAN', W/2, 34, { align:'center' });
+
+    y = 46;
+
+    // ID & Status
+    doc.setTextColor(40, 40, 40);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('ID PESANAN', 12, y);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text(orderData.id_pesanan || '-', 12, y+6);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text('Tanggal: ' + (orderData.tanggal || '-'), 12, y+13);
+
+    // Status badge
+    const statusText = orderData.status_pesanan || 'Pesanan Diterima';
+    doc.setFillColor(232, 245, 233);
+    doc.roundedRect(W-52, y-2, 42, 10, 3, 3, 'F');
+    doc.setTextColor(45, 106, 39);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.text(statusText, W-31, y+5, { align:'center' });
+
+    y += 22;
+
+    // Divider
+    doc.setDrawColor(230, 230, 230);
+    doc.line(12, y, W-12, y);
+    y += 8;
+
+    // Info pemesan
+    doc.setTextColor(150, 150, 150);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.text('INFO PEMESAN', 12, y);
+    y += 6;
+
+    doc.setTextColor(40, 40, 40);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text(orderData.nama || '-', 12, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    const alamatLines = doc.splitTextToSize(orderData.alamat || '-', W-24);
+    doc.text(alamatLines, 12, y);
+    y += alamatLines.length * 5 + 6;
+
+    // Divider
+    doc.setDrawColor(230, 230, 230);
+    doc.line(12, y, W-12, y);
+    y += 8;
+
+    // Produk
+    doc.setTextColor(150, 150, 150);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.text('PRODUK YANG DIPESAN', 12, y);
+    y += 7;
+
+    const produkItems = parseProduk(orderData.produk);
+    produkItems.forEach(item => {
+      doc.setTextColor(40, 40, 40);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      const namaLines = doc.splitTextToSize(item.nama, W-50);
+      doc.text(namaLines, 12, y);
+      doc.text('x' + item.qty, W-40, y);
+      doc.setFont('helvetica', 'bold');
+      doc.text(rp(item.subtotal), W-12, y, { align:'right' });
+      y += namaLines.length * 5 + 3;
+    });
+
+    y += 3;
+    doc.setDrawColor(230, 230, 230);
+    doc.line(12, y, W-12, y);
+    y += 7;
+
+    // Ongkir & Total
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Ongkos Kirim', 12, y);
+    doc.text('Rp 25.000', W-12, y, { align:'right' });
+    y += 7;
+
+    doc.setDrawColor(45, 106, 39);
+    doc.setLineWidth(0.5);
+    doc.line(12, y, W-12, y);
+    doc.setLineWidth(0.2);
+    y += 6;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(40, 40, 40);
+    doc.text('TOTAL BAYAR', 12, y);
+    doc.setTextColor(45, 106, 39);
+    doc.text(rp(orderData.total), W-12, y, { align:'right' });
+    y += 12;
+
+    // Footer
+    doc.setDrawColor(230, 230, 230);
+    doc.line(12, y, W-12, y);
+    y += 8;
+    doc.setTextColor(150, 150, 150);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.text('Terima kasih sudah berbelanja di GayoMart! 🌿', W/2, y, { align:'center' });
+    y += 5;
+    doc.text('Simpan struk ini sebagai bukti pembelian.', W/2, y, { align:'center' });
+
+    doc.save(`Struk-GayoMart-${orderData.id_pesanan}.pdf`);
+  } catch(err) {
+    alert('Gagal buat PDF: ' + err.message);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Struk PDF';
+}
+
+/* ══ AUTO LOAD dari URL param ══ */
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if(id){
+    document.getElementById('inputId').value = id;
+    cariPesanan();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter') cariPesanan();
+});
+</script>
 </body>
 </html>
