@@ -531,6 +531,10 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
         </div>
       </div>
       <div class="form-group">
+  <label class="form-label">EMAIL (untuk notifikasi pesanan)</label>
+  <input type="email" class="form-input" id="inputEmail" placeholder="email@kamu.com">
+</div>
+      <div class="form-group">
         <label class="form-label">METODE PEMBAYARAN</label>
         <select class="form-select" id="inputPayment">
           <option value="">Pilih metode pembayaran</option>
@@ -551,13 +555,29 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
       </div>
     </div>
     <div class="success-state" id="successState" style="display:none;">
-      <div class="success-icon">✅</div>
-      <h2 class="success-title">Pesanan Diterima!</h2>
-      <p class="success-sub">Terima kasih sudah berbelanja di GayoMart. Pesananmu akan segera diproses oleh penjual dan dikirim ke alamatmu.</p>
-      <button class="success-close" id="successClose">Tutup & Lanjut Belanja</button>
-    </div>
-  </div>
+  <div class="success-icon">✅</div>
+  <h2 class="success-title">Pesanan Diterima!</h2>
+  <p class="success-sub">
+    Terima kasih sudah berbelanja di GayoMart.<br>
+    Cek email kamu untuk link lacak pesanan.<br><br>
+    ID Pesanan: <strong id="trackingId">-</strong>
+  </p>
+  <a id="trackingLink" href="#" target="_blank" style="
+    display:block;
+    margin: 0 auto 20px;
+    padding: 11px 24px;
+    background: #f4faf3;
+    border: 1px solid #c4ddc0;
+    border-radius: 100px;
+    font-size: 13px;
+    color: #2D6A27;
+    text-decoration: none;
+    font-weight: 500;
+  ">🔍 Lacak Pesanan Saya</a>
+  <button class="success-close" id="successClose">Tutup & Lanjut Belanja</button>
 </div>
+  </div>
+  </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -765,57 +785,78 @@ function kirimKeSheet(data, SHEET_URL) {
 document.getElementById('modalConfirm').addEventListener('click', async ()=>{
   const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx79L5DfLVQAzvR9lxxJ5yfgRyrZRvyxUmjDlyUNhdtGsr9UiYwuCwUG2_vMHwGM5WO/exec';
 
-  const name = document.getElementById('inputName').value.trim();
-  const phone = document.getElementById('inputPhone').value.trim();
-  const addr = document.getElementById('inputAddress').value.trim();
-  const city = document.getElementById('inputCity').value.trim();
-  const zip = document.getElementById('inputZip').value.trim();
+  const name    = document.getElementById('inputName').value.trim();
+  const phone   = document.getElementById('inputPhone').value.trim();
+  const email   = document.getElementById('inputEmail').value.trim();
+  const addr    = document.getElementById('inputAddress').value.trim();
+  const city    = document.getElementById('inputCity').value.trim();
+  const zip     = document.getElementById('inputZip').value.trim();
   const payment = document.getElementById('inputPayment').value;
 
-  if(!name||!phone||!addr||!city||!payment){ showToast('Lengkapi semua data dulu ya!'); return; }
+  if(!name||!phone||!email||!addr||!city||!payment){
+    showToast('Lengkapi semua data dulu ya!'); return;
+  }
 
-  const total = cart.reduce((s,x) => s + x.price * x.qty, 0) + 25000;
+  // Validasi format email
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    showToast('Format email tidak valid!'); return;
+  }
 
-// Format produk: "id|nama|qty|subtotal" dipisah ";;"
+  const total     = cart.reduce((s,x) => s + x.price * x.qty, 0) + 25000;
   const produkStr = cart.map(i => `${i.id}|${i.name}|${i.qty}|${i.price * i.qty}`).join(';;');
+  const id_pesanan = 'GM-' + Date.now();
 
-  // ✅ Generate id_pesanan disini supaya PESANAN & PEMBAYARAN sama
-  const id_pesanan = 'PSN-' + Date.now();
+  // Buat link tracking
+const trackingUrl = `dashboardmk.html?id=${id_pesanan}`;
 
   document.getElementById('modalConfirm').textContent = 'Memproses...';
   document.getElementById('modalConfirm').disabled = true;
 
-  // Kirim data PESANAN
+  // Kirim data PESANAN (+ email + tracking)
   await kirimKeSheet({
-    action: 'tambahPesanan',
-    id_pesanan: id_pesanan,
-    nama_pembeli: name,
-    no_hp: phone,
-    alamat: addr,
-    total: total,
-    produk: produkStr
+    action       : 'tambahPesanan',
+    id_pesanan   : id_pesanan,
+    nama_pembeli : name,
+    no_hp        : phone,
+    email        : email,
+    alamat       : addr + ', ' + city + ', ' + zip,
+    total        : total,
+    produk       : produkStr,
+    tracking_url : trackingUrl,
+    status       : 'Pesanan Diterima'
   }, SHEET_URL);
 
   // Kirim data PEMBAYARAN
   await kirimKeSheet({
-    action: 'tambahPembayaran',
-    id_pesanan: id_pesanan,
-    metode: payment,
-    jumlah: total
+    action     : 'tambahPembayaran',
+    id_pesanan : id_pesanan,
+    metode     : payment,
+    jumlah     : total
+  }, SHEET_URL);
+
+  // Kirim EMAIL notifikasi via Apps Script
+  await kirimKeSheet({
+    action       : 'kirimEmail',
+    email        : email,
+    nama         : name,
+    id_pesanan   : id_pesanan,
+    tracking_url : trackingUrl,
+    total        : total,
+    produk       : produkStr
   }, SHEET_URL);
 
   document.getElementById('modalConfirm').textContent = 'Pesan Sekarang 🌿';
   document.getElementById('modalConfirm').disabled = false;
   document.getElementById('checkoutForm').style.display = 'none';
+
+  // Tampilkan link tracking di success state
+  document.getElementById('trackingLink').href = trackingUrl;
+  document.getElementById('trackingId').textContent = id_pesanan;
+
   document.getElementById('successState').style.display = 'block';
   cart = [];
   updateCartUI();
 });
-
-document.getElementById('successClose').addEventListener('click', ()=>{
-  document.getElementById('modalOverlay').classList.remove('open');
-});
-
 /* ══ FILTER & SEARCH ══ */
 document.querySelectorAll('.cat-btn').forEach(btn => {
   btn.addEventListener('click', ()=>{
