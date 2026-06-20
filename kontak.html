@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontak – Desa Gayo</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Work Sans',sans-serif;background:#f7f9f7;color:#111;overflow-x:hidden;}
+
+/* AURORA */
+@keyframes auroraShift{0%{transform:translate(-10%,-10%) scale(1);}33%{transform:translate(5%,8%) scale(1.08);}66%{transform:translate(-5%,12%) scale(0.96);}100%{transform:translate(-10%,-10%) scale(1);}}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.aurora-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.10;animation:auroraShift 14s ease-in-out infinite;}
+.aurora-blob.a1{width:700px;height:500px;top:-120px;left:-100px;background:radial-gradient(ellipse,#2D6A27 0%,transparent 70%);}
+.aurora-blob.a2{width:500px;height:400px;top:30%;right:-80px;background:radial-gradient(ellipse,#4CAF50 0%,transparent 70%);animation-delay:-5s;opacity:0.07;}
+.aurora-blob.a3{width:600px;height:350px;bottom:10%;left:20%;background:radial-gradient(ellipse,#1B5E20 0%,transparent 70%);animation-delay:-9s;opacity:0.08;}
+
+/* NAVBAR */
+.navbar{position:fixed;top:0;left:0;width:100%;z-index:300;background:rgba(13,24,18,0.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);padding:16px 5%;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-family:'Libre Caslon Text',serif;font-size:22px;color:#fff;letter-spacing:-0.02em;font-weight:600;text-decoration:none;}
+.nav-icon{font-family:'Material Symbols Outlined';font-size:26px;color:#adcfb4;font-variation-settings:'FILL' 1;}
+.nav-links{display:flex;gap:36px;align-items:center;list-style:none;}
+.nav-links a{font-family:'Work Sans',sans-serif;font-size:14px;font-weight:500;color:rgba(255,255,255,0.7);text-decoration:none;transition:color .2s;position:relative;}
+.nav-links a:hover{color:#fff;}
+.nav-links a.active{color:#fff;}
+.nav-links a.active::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:5px;height:5px;background:#adcfb4;border-radius:50%;}
+.nav-btn{background:#adcfb4;color:#163422;padding:10px 24px;border-radius:6px;font-family:'Work Sans',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.02em;border:none;cursor:pointer;transition:all .2s;}
+.nav-btn:hover{background:#fff;transform:translateY(-1px);}
+.nav-ham{display:none;width:38px;height:38px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:transparent;align-items:center;justify-content:center;gap:4.5px;cursor:pointer;flex-direction:column;}
+.ham-l{width:18px;height:2px;background:#fff;border-radius:2px;}
+
+/* MOBILE MENU */
+.mobile-menu{position:fixed;top:65px;left:0;width:100%;z-index:299;background:rgba(13,24,18,0.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,0.1);padding:16px 5% 24px;display:flex;flex-direction:column;gap:4px;transform:translateY(-110%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;}
+.mobile-menu.open{transform:translateY(0);pointer-events:all;}
+.mobile-menu a{font-size:15px;color:rgba(255,255,255,0.8);text-decoration:none;padding:12px 8px;border-bottom:1px solid rgba(255,255,255,0.05);font-weight:400;transition:color .2s;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover,.mobile-menu a.active{color:#adcfb4;font-weight:500;}
+
+/* HERO KONTAK */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+.kontak-hero{position:relative;z-index:1;min-height:52vh;display:flex;align-items:flex-end;justify-content:center;padding:120px 24px 64px;background:#0d180f;overflow:hidden;}
+.kontak-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 100% at 50% 0%,rgba(45,106,39,0.35) 0%,transparent 70%);}
+.kontak-hero-inner{position:relative;z-index:2;text-align:center;max-width:680px;}
+.kontak-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#adcfb4;margin-bottom:20px;font-weight:500;animation:fadeUp .6s ease both;}
+.kontak-eyebrow-line{width:28px;height:1px;background:#adcfb4;opacity:0.6;}
+.kontak-hero-title{font-family:'Libre Caslon Text',serif;font-size:clamp(36px,5.5vw,68px);font-weight:700;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:20px;animation:fadeUp .7s ease .1s both;}
+.kontak-hero-title em{font-style:italic;color:#c8ebd0;}
+.kontak-hero-desc{font-size:15.5px;color:rgba(255,255,255,0.65);line-height:1.85;font-weight:300;animation:fadeUp .7s ease .2s both;}
+
+/* MAIN CONTENT */
+.kontak-main{position:relative;z-index:2;background:#f7f9f7;padding:80px 24px 100px;}
+.kontak-wrap{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:start;}
+
+/* KIRI — info */
+.kontak-info{animation:fadeUp .8s ease .1s both;}
+.kontak-section-label{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#2D6A27;font-weight:600;margin-bottom:14px;}
+.kontak-info-title{font-family:'Libre Caslon Text',serif;font-size:clamp(24px,3vw,38px);font-weight:700;color:#111;line-height:1.18;letter-spacing:-.4px;margin-bottom:16px;}
+.kontak-info-title em{font-style:italic;color:#2D6A27;}
+.kontak-info-body{font-size:14.5px;color:#666;line-height:1.9;font-weight:300;margin-bottom:40px;}
+
+/* KARTU KONTAK */
+.kontak-cards{display:flex;flex-direction:column;gap:14px;margin-bottom:40px;}
+.kontak-card{display:flex;align-items:flex-start;gap:16px;background:#fff;border:1px solid rgba(45,106,39,0.12);border-radius:16px;padding:20px 22px;transition:box-shadow .25s,transform .25s;}
+.kontak-card:hover{box-shadow:0 8px 28px rgba(45,106,39,0.10);transform:translateY(-2px);}
+.kontak-card-icon{width:44px;height:44px;border-radius:12px;background:#f0f7f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.kontak-card-icon svg{width:22px;height:22px;stroke:#2D6A27;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.kontak-card-label{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#aaa;font-weight:600;margin-bottom:4px;}
+.kontak-card-val{font-size:14.5px;font-weight:500;color:#111;}
+.kontak-card-sub{font-size:12.5px;color:#888;margin-top:2px;font-weight:300;}
+
+/* BADGE JAM */
+.kontak-jam{display:inline-flex;align-items:center;gap:8px;background:#f0f7f0;border:1px solid rgba(45,106,39,0.18);border-radius:100px;padding:8px 18px 8px 12px;font-size:12.5px;color:#2D6A27;font-weight:500;}
+.kontak-jam svg{width:16px;height:16px;stroke:#2D6A27;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+/* KANAN — CTA WA */
+.kontak-cta-box{animation:fadeUp .8s ease .2s both;}
+.wa-card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);}
+.wa-card-top{background:linear-gradient(135deg,#163422 0%,#2D6A27 60%,#3d8a32 100%);padding:40px 36px 36px;position:relative;overflow:hidden;}
+.wa-card-top::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.05);}
+.wa-card-top::after{content:'';position:absolute;bottom:-40px;left:-30px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.wa-card-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:100px;padding:5px 14px 5px 10px;font-size:11px;color:#fff;margin-bottom:20px;}
+.wa-dot{width:6px;height:6px;border-radius:50%;background:#25d366;animation:pulse-dot 2s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.6);}}
+.wa-card-title{font-family:'Libre Caslon Text',serif;font-size:28px;font-weight:700;color:#fff;line-height:1.2;letter-spacing:-.3px;margin-bottom:10px;position:relative;z-index:1;}
+.wa-card-desc{font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.75;font-weight:300;position:relative;z-index:1;}
+
+.wa-card-body{padding:32px 36px;}
+.wa-steps{display:flex;flex-direction:column;gap:16px;margin-bottom:28px;}
+.wa-step{display:flex;align-items:flex-start;gap:14px;}
+.wa-step-num{width:28px;height:28px;border-radius:50%;background:#f0f7f0;border:1px solid rgba(45,106,39,0.2);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:#2D6A27;flex-shrink:0;margin-top:1px;}
+.wa-step-text{font-size:13.5px;color:#555;line-height:1.7;font-weight:300;padding-top:4px;}
+.wa-step-text strong{color:#111;font-weight:500;}
+
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;background:#25d366;color:#fff;padding:16px 28px;border-radius:14px;font-size:15px;font-weight:600;text-decoration:none;font-family:'Work Sans',sans-serif;transition:all .25s;border:none;cursor:pointer;}
+.wa-btn:hover{background:#20bc5a;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,0.28);}
+.wa-btn svg{width:22px;height:22px;fill:#fff;flex-shrink:0;}
+.wa-btn-sub{text-align:center;font-size:11.5px;color:#aaa;margin-top:12px;font-weight:300;}
+
+/* STRIP BAWAH */
+.kontak-strip{position:relative;z-index:2;background:#0d180f;padding:64px 24px;text-align:center;}
+.kontak-strip-title{font-family:'Libre Caslon Text',serif;font-size:clamp(22px,3vw,36px);font-weight:700;color:#fff;margin-bottom:12px;letter-spacing:-.3px;}
+.kontak-strip-title em{font-style:italic;color:#c8ebd0;}
+.kontak-strip-desc{font-size:14px;color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto 32px;line-height:1.8;font-weight:300;}
+.strip-wa-btn{display:inline-flex;align-items:center;gap:10px;background:#25d366;color:#fff;padding:15px 36px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;font-family:'Work Sans',sans-serif;transition:all .25s;}
+.strip-wa-btn:hover{background:#20bc5a;transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,0.25);}
+.strip-wa-btn svg{width:20px;height:20px;fill:#fff;}
+
+/* FOOTER MINI */
+.footer{position:relative;z-index:2;background:#0d0d0d;padding:32px 56px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(255,255,255,0.05);}
+.f-brand{font-family:'Libre Caslon Text',serif;font-size:17px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+.f-brand-dot{width:7px;height:7px;border-radius:50%;background:#2D6A27;}
+.footer-copy{font-size:11.5px;color:rgba(255,255,255,0.22);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .navbar{padding:12px 24px;}
+  .nav-btn,.nav-links{display:none;}
+  .nav-ham{display:flex;}
+  .kontak-wrap{grid-template-columns:1fr;}
+  .kontak-main{padding:56px 20px 72px;}
+  .wa-card-top,.wa-card-body{padding:28px 24px;}
+  .footer{padding:24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="aurora">
+  <div class="aurora-blob a1"></div>
+  <div class="aurora-blob a2"></div>
+  <div class="aurora-blob a3"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <span class="material-symbols-outlined nav-icon">spa</span>
+    Desa Gayo
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="index.html#intro">Tentang</a></li>
+    <li><a href="index.html#marketplace">Marketplace</a></li>
+    <li><a href="berita.html">Berita</a></li>
+    <li><a href="kontak.html" class="active">Kontak</a></li>
+    <li><a href="dashboardmk.html">Info Pesanan</a></li>
+    <li><a href="dashboard.html">Admin</a></li>
+  </ul>
+  <button class="nav-btn">Hubungi Kami</button>
+  <button class="nav-ham" id="hamBtn" aria-label="Menu">
+    <span class="ham-l"></span><span class="ham-l"></span><span class="ham-l"></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Beranda</a>
+  <a href="index.html#intro">Tentang</a>
+  <a href="index.html#marketplace">Marketplace</a>
+  <a href="berita.html">Berita</a>
+  <a href="kontak.html" class="active">Kontak</a>
+  <a href="dashboardmk.html">Info Pesanan</a>
+  <a href="dashboard.html">Admin</a>
+</div>
+
+<!-- HERO -->
+<div class="kontak-hero">
+  <div class="kontak-hero-inner">
+    <div class="kontak-eyebrow">
+      <span class="kontak-eyebrow-line"></span>
+      Kami siap membantu
+      <span class="kontak-eyebrow-line"></span>
+    </div>
+    <h1 class="kontak-hero-title">Hubungi <em>Kami</em></h1>
+    <p class="kontak-hero-desc">Ada pertanyaan tentang produk, desa, atau kopi Gayo? Tim kami dengan senang hati membantu kamu kapan saja.</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="kontak-main">
+  <div class="kontak-wrap">
+
+    <!-- KIRI -->
+    <div class="kontak-info">
+      <p class="kontak-section-label">Informasi Kontak</p>
+      <h2 class="kontak-info-title">Kami ada untuk<br><em>kamu</em></h2>
+      <p class="kontak-info-body">Mulai dari pertanyaan seputar produk kopi, pemesanan massal, kolaborasi desa, hingga informasi wisata Gayo — tim admin kami siap menjawab dengan cepat dan ramah.</p>
+
+      <div class="kontak-cards">
+
+        <!-- WhatsApp -->
+        <div class="kontak-card">
+          <div class="kontak-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10c0 .55.45 1 1 1h.01"/><path d="M13 10c0 .55.45 1 1 1h.01"/><path d="M9.5 14.5s1 1.5 2.5 1.5 2.5-1.5 2.5-1.5"/></svg>
+          </div>
+          <div>
+            <p class="kontak-card-label">WhatsApp Admin</p>
+            <p class="kontak-card-val">0838-4612-0071</p>
+            <p class="kontak-card-sub">Respon cepat di jam kerja</p>
+          </div>
+        </div>
+
+        <!-- Lokasi -->
+        <div class="kontak-card">
+          <div class="kontak-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          </div>
+          <div>
+            <p class="kontak-card-label">Lokasi</p>
+            <p class="kontak-card-val">Aceh Tengah, Aceh</p>
+            <p class="kontak-card-sub">Dataran Tinggi Gayo, Sumatera</p>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="kontak-card">
+          <div class="kontak-card-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          <div>
+            <p class="kontak-card-label">Email</p>
+            <p class="kontak-card-val">admin@gayomart.id</p>
+            <p class="kontak-card-sub">Untuk keperluan resmi & kerjasama</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="kontak-jam">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        Senin – Sabtu, 08.00 – 17.00 WIB
+      </div>
+    </div>
+
+    <!-- KANAN -->
+    <div class="kontak-cta-box">
+      <div class="wa-card">
+        <div class="wa-card-top">
+          <div class="wa-card-badge">
+            <span class="wa-dot"></span>
+            Admin Online
+          </div>
+          <h3 class="wa-card-title">Chat langsung via WhatsApp</h3>
+          <p class="wa-card-desc">Cara tercepat untuk mendapat jawaban. Klik tombol di bawah dan mulai percakapan langsung dengan admin GayoMart.</p>
+        </div>
+        <div class="wa-card-body">
+          <div class="wa-steps">
+            <div class="wa-step">
+              <span class="wa-step-num">1</span>
+              <p class="wa-step-text">Klik tombol <strong>Mulai Chat</strong> di bawah ini</p>
+            </div>
+            <div class="wa-step">
+              <span class="wa-step-num">2</span>
+              <p class="wa-step-text">WhatsApp akan terbuka dengan pesan otomatis</p>
+            </div>
+            <div class="wa-step">
+              <span class="wa-step-num">3</span>
+              <p class="wa-step-text">Admin kami akan segera membalas pertanyaanmu</p>
+            </div>
+          </div>
+
+          <a href="https://wa.me/6283846120071?text=Halo%20Admin%20GayoMart%2C%20saya%20ingin%20bertanya%20tentang%20produk%20dan%20layanan%20Desa%20Gayo." class="wa-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Mulai Chat Sekarang
+          </a>
+          <p class="wa-btn-sub">Gratis · Tidak perlu daftar · Langsung dibalas</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STRIP BAWAH -->
+<div class="kontak-strip">
+  <h2 class="kontak-strip-title">Punya pertanyaan lain?<br><em>Kami selalu siap.</em></h2>
+  <p class="kontak-strip-desc">Jangan ragu menghubungi kami untuk pemesanan kopi, informasi wisata, kolaborasi, atau apapun tentang Gayo.</p>
+  <a href="https://wa.me/6283846120071?text=Halo%20Admin%20GayoMart%2C%20saya%20ingin%20bertanya%20tentang%20produk%20dan%20layanan%20Desa%20Gayo." class="strip-wa-btn" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Chat via WhatsApp
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="f-brand">
+    <span class="f-brand-dot"></span>
+    Desa Gayo
+  </div>
+  <p class="footer-copy">© 2026 GayoMart · Aceh Tengah</p>
+</footer>
+
+<script>
+const ham = document.getElementById('hamBtn');
+const menu = document.getElementById('mobileMenu');
+ham.addEventListener('click', () => menu.classList.toggle('open'));
+</script>
+</body>
+</html>
