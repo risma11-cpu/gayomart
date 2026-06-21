@@ -312,6 +312,7 @@ body{font-family:'Work Sans',sans-serif;background:#fff;color:#111;overflow-x:hi
 /* ══ RESPONSIVE ══ */
 @media(max-width:768px){
   .navbar{padding:12px 24px;}
+  .nav-links{display:none;}  /* ← tambah ini */
   .nav-btn{display:none;}
   .nav-ham{display:flex;}
   .hero{padding:0 24px;}
@@ -372,9 +373,9 @@ body{font-family:'Work Sans',sans-serif;background:#fff;color:#111;overflow-x:hi
     <li><a href="dashboardmk.html">Info Pesanan</a></li>
     <li><a href="dashboard.html">Admin</a></li>
   </ul>
-  <div class="nav-ham" aria-label="Menu">
+  <button class="nav-ham" id="hamBtn" aria-label="Menu">
     <span class="ham-l"></span><span class="ham-l"></span><span class="ham-l"></span>
-  </div>
+  </button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <a href="#" class="active">Beranda</a>
