@@ -28,7 +28,7 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
 .ham-l{width:16px;height:1.5px;background:#111;border-radius:2px;}
 /* ══ HERO ══ */
 .mkt-hero {
-  background: #f0f7f0;
+  background: url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663766411656/eDYmWHikMiouDzzh.png') center/cover no-repeat;
   padding: 72px 56px 64px;
   position: relative;
   overflow: hidden;
@@ -155,12 +155,12 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: rgba(45,106,39,0.08);
-  border: 1px solid rgba(45,106,39,0.18);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
   border-radius: 100px;
   padding: 6px 16px 6px 10px;
   font-size: 11px;
-  color: #2D6A27;
+  color: #ffffff;
   margin-bottom: 0;
   font-weight: 500;
 }
@@ -169,7 +169,7 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #2D6A27;
+  background: #ffffff;
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
@@ -177,7 +177,7 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
   font-family: 'Playfair Display', serif;
   font-size: clamp(28px, 3.5vw, 52px);
   font-weight: 700;
-  color: #1a1a1a;
+  color: #ffffff;
   line-height: 1.12;
   letter-spacing: -.5px;
   margin-bottom: 0;
@@ -185,12 +185,12 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
 
 .mkt-hero-title em {
   font-style: italic;
-  color: #2D6A27;
+  color: rgba(255,255,255,0.85);
 }
 
 .mkt-hero-desc {
   font-size: 14px;
-  color: rgba(0,0,0,0.48);
+  color: rgba(255,255,255,0.8);
   max-width: 500px;
   line-height: 1.8;
   font-weight: 300;
@@ -423,6 +423,7 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
 
 <!-- HERO -->
 <div class="mkt-hero">
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.4) 100%);z-index:1;"></div>
   <div class="mkt-hero-aurora"></div>
   <div class="mkt-hero-inner">
     <div class="mkt-hero-tag"><span class="mkt-hero-tag-dot"></span>GayoMart · Marketplace Digital Desa</div>
@@ -566,7 +567,7 @@ body{font-family:'Inter',sans-serif;background:#fafafa;color:#111;overflow-x:hid
     Cek email kamu untuk link lacak pesanan.<br><br>
     ID Pesanan: <strong id="trackingId">-</strong>
   </p>
-  <a id="trackingLink" href="#" target="_blank" style="
+  <a id="trackingLink" href="#" style="
     display:block;
     margin: 0 auto 20px;
     padding: 11px 24px;
@@ -754,36 +755,14 @@ document.getElementById('modalOverlay').addEventListener('click', e=>{
 });
 
 /* ══ KIRIM KE SHEET — FORM SUBMIT ══ */
-function kirimKeSheet(data, SHEET_URL) {
-  return new Promise((resolve) => {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = SHEET_URL;
-    form.target = 'hidden_iframe';
-
-    Object.entries(data).forEach(([key, val]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = val;
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-
-    const iframe = document.querySelector('iframe[name="hidden_iframe"]') || (() => {
-      const f = document.createElement('iframe');
-      f.name = 'hidden_iframe';
-      f.style.display = 'none';
-      document.body.appendChild(f);
-      return f;
-    })();
-
-    iframe.onload = () => resolve(true);
-    form.submit();
-    document.body.removeChild(form);
-    setTimeout(() => resolve(true), 3000);
+async function kirimKeSheet(data, SHEET_URL) {
+  const params = new URLSearchParams(data);
+  await fetch(SHEET_URL, {
+    method: 'POST',
+    body: params,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   });
+  await new Promise(r => setTimeout(r, 1500));
 }
 
 document.getElementById('modalConfirm').addEventListener('click', async ()=>{
@@ -801,22 +780,19 @@ document.getElementById('modalConfirm').addEventListener('click', async ()=>{
     showToast('Lengkapi semua data dulu ya!'); return;
   }
 
-  // Validasi format email
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     showToast('Format email tidak valid!'); return;
   }
 
-  const total     = cart.reduce((s,x) => s + x.price * x.qty, 0) + 25000;
-  const produkStr = cart.map(i => `${i.id}|${i.name}|${i.qty}|${i.price * i.qty}`).join(';;');
+  const total      = cart.reduce((s,x) => s + x.price * x.qty, 0) + 25000;
+  const produkStr  = cart.map(i => `${i.id}|${i.name}|${i.qty}|${i.price * i.qty}`).join(';;');
   const id_pesanan = 'GM-' + Date.now();
+  const trackingUrl = `dashboardmk.html?id=${id_pesanan}`;
 
-  // Buat link tracking
-const trackingUrl = `dashboardmk.html?id=${id_pesanan}`;
+  const btn = document.getElementById('modalConfirm');
+  btn.textContent = 'Memproses...';
+  btn.disabled = true;
 
-  document.getElementById('modalConfirm').textContent = 'Memproses...';
-  document.getElementById('modalConfirm').disabled = true;
-
-  // Kirim data PESANAN (+ email + tracking)
   await kirimKeSheet({
     action       : 'tambahPesanan',
     id_pesanan   : id_pesanan,
@@ -830,7 +806,6 @@ const trackingUrl = `dashboardmk.html?id=${id_pesanan}`;
     status       : 'Pesanan Diterima'
   }, SHEET_URL);
 
-  // Kirim data PEMBAYARAN
   await kirimKeSheet({
     action     : 'tambahPembayaran',
     id_pesanan : id_pesanan,
@@ -838,7 +813,6 @@ const trackingUrl = `dashboardmk.html?id=${id_pesanan}`;
     jumlah     : total
   }, SHEET_URL);
 
-  // Kirim EMAIL notifikasi via Apps Script
   await kirimKeSheet({
     action       : 'kirimEmail',
     email        : email,
@@ -849,15 +823,14 @@ const trackingUrl = `dashboardmk.html?id=${id_pesanan}`;
     produk       : produkStr
   }, SHEET_URL);
 
-  document.getElementById('modalConfirm').textContent = 'Pesan Sekarang 🌿';
-  document.getElementById('modalConfirm').disabled = false;
+  btn.textContent = 'Pesan Sekarang 🌿';
+  btn.disabled = false;
   document.getElementById('checkoutForm').style.display = 'none';
 
-  // Tampilkan link tracking di success state
   document.getElementById('trackingLink').href = trackingUrl;
   document.getElementById('trackingId').textContent = id_pesanan;
-
   document.getElementById('successState').style.display = 'block';
+
   cart = [];
   updateCartUI();
 });
