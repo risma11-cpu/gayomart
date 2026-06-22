@@ -107,7 +107,7 @@ body{font-family:'Work Sans',sans-serif;background:#fff;color:#111;overflow-x:hi
 .fan-card.f5:hover{transform:rotate(20deg)  translateY(-18px);z-index:10;box-shadow:0 28px 64px rgba(0,0,0,0.22);}
 
 /* INTRO */
-.intro-section{position:relative;z-index:2;background:#fff;overflow:hidden;}
+.intro-section{position:relative;z-index:2;background:#f5f8f0;overflow:hidden;}
 .intro-slider{position:relative;width:100%;height:560px;overflow:hidden;}
 .intro-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:80px 56px;opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity 1s cubic-bezier(.4,0,.2,1),transform 1s cubic-bezier(.4,0,.2,1);}
 .intro-slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
@@ -125,12 +125,12 @@ body{font-family:'Work Sans',sans-serif;background:#fff;color:#111;overflow-x:hi
 .intro-tag{display:inline-flex;align-items:center;gap:6px;background:#f4faf3;border:1px solid #c4ddc0;border-radius:100px;padding:5px 14px;font-size:11.5px;color:#2D6A27;font-weight:500;}
 .intro-visual{border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.10);aspect-ratio:4/3;}
 .intro-visual img{width:100%;height:100%;display:block;object-fit:cover;}
-.slider-nav{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;gap:10px;padding:20px 0 48px;background:#fff;}
+.slider-nav{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;gap:10px;padding:20px 0 48px;background:#f5f8f0;}
 .s-dot{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.15);cursor:pointer;transition:all .5s cubic-bezier(.4,0,.2,1);border:none;padding:0;}
 .s-dot.active{width:32px;border-radius:4px;background:#2D6A27;}
 .slide-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(to right,#2D6A27,#5CAF50);width:0%;z-index:10;}
 
-.testi-section{position:relative;z-index:2;background:#fafafa;padding:88px 0 80px;overflow:hidden;}
+.testi-section{position:relative;z-index:2;background:#f5f8f0;padding:88px 0 80px;overflow:hidden;}
 .testi-head{text-align:center;padding:0 56px;margin-bottom:52px;}
 .testi-track-wrap{position:relative;overflow:hidden;}
 .testi-track-wrap::before,.testi-track-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none;}
@@ -154,7 +154,7 @@ body{font-family:'Work Sans',sans-serif;background:#fff;color:#111;overflow-x:hi
 .stat-num{font-family:'Libre Caslon Text',serif;font-size:44px;font-weight:700;color:#fff;line-height:1;margin-bottom:10px;}
 .stat-lbl{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.38);}
 
-.mkt-section{position:relative;z-index:2;overflow:hidden;background:#ffffff;padding:96px 56px 88px;text-align:center;background-image:linear-gradient(to right,rgba(0,0,0,0.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,0,0,0.12) 1px,transparent 1px);background-size:72px 72px;}
+.mkt-section{position:relative;z-index:2;overflow:hidden;background:#f5f8f0;padding:96px 56px 88px;text-align:center;background-image:linear-gradient(to right,rgba(0,0,0,0.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,0,0,0.12) 1px,transparent 1px);background-size:72px 72px;}
 .mkt-section::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to right,#fff 0%,transparent 8%,transparent 92%,#fff 100%),radial-gradient(ellipse 75% 70% at 50% 50%,rgba(255,255,255,0) 0%,#fff 80%);}
 .mkt-inner{position:relative;z-index:2;}
 .mkt-tag{display:inline-flex;align-items:center;gap:7px;background:#f4faf3;border:1px solid #c4ddc0;border-radius:100px;padding:7px 18px 7px 11px;font-size:11.5px;color:#2D6A27;letter-spacing:.3px;font-weight:500;margin-bottom:24px;}
@@ -390,10 +390,8 @@ body{font-family:'Work Sans',sans-serif;background:#fff;color:#111;overflow-x:hi
 <div class="hero-bg">
   <section class="hero">
     <h1 class="hero-title">
-      Temukan Keindahan<br>
-      <em>Desa Gayo</em><br>
-      Aceh Tengah
-    </h1>
+  Temukan Keindahan <em>Desa Gayo</em> Aceh Tengah
+</h1>
     <p class="hero-desc">Pesona alam pegunungan, budaya leluhur yang kaya, dan kopi arabika terbaik dunia — semua ada di Tanah Gayo yang subur, sejuk, dan memesona.</p>
     <div class="hero-cta">
       <button class="btn-dark" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">
