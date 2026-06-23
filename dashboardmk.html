@@ -129,6 +129,29 @@ body{font-family:'Inter',sans-serif;background:#f8faf8;color:#111;line-height:1.
 .footer-back{font-size:12.5px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;}
 .footer-back:hover{color:#7DD87A;}
 
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 101;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: #111;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+.hamburger.active span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
 @media(max-width:768px){
   .navbar{padding:0 20px;}
   .track-hero{padding:36px 20px 32px;}
@@ -137,14 +160,39 @@ body{font-family:'Inter',sans-serif;background:#f8faf8;color:#111;line-height:1.
   .search-row{flex-direction:column;}
   .footer{padding:24px 20px;}
 }
+.hamburger { display: flex; }
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 62px;
+    left: 0;
+    width: 100%;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid #eee;
+    padding: 12px 0;
+    list-style: none;
+    gap: 0;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links li a { display: block; padding: 13px 24px; font-size: 14px; }
+
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
   <a href="index.html" class="nav-brand"><span class="nav-dot"></span>Desa Gayo</a>
-  <ul class="nav-links">
+  
+  <!-- Tombol hamburger -->
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <ul class="nav-links" id="nav-links">
     <li><a href="marketplace.html">Marketplace</a></li>
     <li><a href="berita.html">Berita</a></li>
     <li><a href="index.html">Beranda</a></li>
@@ -546,6 +594,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('keydown', e => {
   if(e.key === 'Enter') cariPesanan();
+});
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('nav-links');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    navLinks.classList.remove('open');
+  });
 });
 </script>
 </body>
